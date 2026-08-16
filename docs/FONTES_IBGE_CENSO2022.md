@@ -43,9 +43,13 @@ Arquivos CSV usados no núcleo atual:
 - `Agregados_por_setores_caracteristicas_domicilio2_BR_20250417.zip`;
 - `Agregados_por_setores_caracteristicas_domicilio3_BR_20250417.zip`.
 
-As partes 2 e 3 das características do domicílio devem usar as versões corrigidas de 17/04/2025. O IBGE registra que variáveis anteriormente zeradas foram corrigidas nessa revisão.
+## 3. Revisões que o pipeline deve impor
 
-## 3. Malha de Setores Censitários com atributos
+O IBGE informa que em 17/04/2025 foram corrigidas variáveis anteriormente zeradas nos arquivos de características do domicílio 2 e 3 e foram realizados ajustes no arquivo básico. Entre as variáveis corrigidas está `V00236`, utilizada diretamente no indicador de banheiro compartilhado do estudo RMR.
+
+Por isso, o pipeline rejeita versões anteriores dos arquivos de características do domicílio 2 e 3 e exige os marcadores `20250417` nas URLs configuradas. Para o arquivo básico, a versão adotada é `20260520`. A função `validar_versoes_minimas` impede que arquivos substituídos sejam reutilizados silenciosamente.
+
+## 4. Malha de Setores Censitários com atributos
 
 Página oficial:
 
@@ -68,7 +72,7 @@ A página oficial confirma, entre outros, os campos:
 
 `SETOR_FCU` é uma derivação do projeto: 1 quando `CD_FCU` está preenchido e 0 quando não está. FCU é atributo territorial transversal e não um escore de precariedade.
 
-## 4. Área territorial efetivamente domiciliada
+## 5. Área territorial efetivamente domiciliada
 
 A própria página oficial da Malha publica a tabela:
 
@@ -78,7 +82,7 @@ Portanto, `AREA_DOM` não deve ser reconstruída por hipótese local quando essa
 
 O link binário direto do XLSX ainda precisa ser materializado no ambiente Colab/portal; ele não será inferido por convenção de nome.
 
-## 5. Entorno dos domicílios
+## 6. Entorno dos domicílios
 
 O entorno possui árvore própria, fora da pasta principal:
 
@@ -98,7 +102,7 @@ A divulgação distingue três universos:
 
 Esses universos não são intercambiáveis. O estudo histórico da RMR utiliza preferencialmente o arquivo de moradores; cada numerador e denominador deverá ser conferido no dicionário específico antes da execução automática.
 
-## 6. Rendimento do responsável
+## 7. Rendimento do responsável
 
 Árvore própria:
 
@@ -120,7 +124,7 @@ No pipeline:
 
 Essas medidas não representam renda domiciliar, renda familiar ou renda domiciliar per capita.
 
-## 7. Estado do mapeamento fino
+## 8. Estado do mapeamento fino
 
 `config/mapeamento_ibge.yaml` contém o mapeamento operacional necessário aos blocos já reconstruídos.
 
@@ -132,7 +136,18 @@ Há três níveis distintos de maturidade:
 
 Execução em staging pode trabalhar com o nível 2, desde que o status seja registrado. Promoção para produto oficial exige eliminação das pendências documentais.
 
-## 8. Política de revisão
+## 9. Casos-âncora de regressão
+
+`config/ancoras_regressao.yaml` registra setores reais já entregues nos produtos históricos de equidade/FCU e densidade ajustada. O módulo `censo_rmr.ancoras` compara a nova execução com esses valores usando tolerância explícita e falha quando:
+
+- um setor-âncora desaparece;
+- uma chave setorial aparece duplicada;
+- um campo esperado não existe;
+- um valor diverge além da tolerância configurada.
+
+As âncoras são um gate de regressão rápido. Elas não substituem a comparação integral dos 7.208 setores de equidade/FCU e dos 7.004 setores da base histórica de densidade.
+
+## 10. Política de revisão
 
 O pipeline deve preservar:
 
