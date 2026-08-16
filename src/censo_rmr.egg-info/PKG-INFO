@@ -1,3 +1,22 @@
+Metadata-Version: 2.4
+Name: censo-rmr
+Version: 0.0.1
+Summary: Pipeline reprodutivel para Censo 2022 e analise territorial da RMR
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=2.2
+Requires-Dist: pyarrow>=16
+Requires-Dist: geopandas>=1.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: numpy>=1.26
+Requires-Dist: scipy>=1.13
+Requires-Dist: scikit-learn>=1.5
+Requires-Dist: matplotlib>=3.9
+Requires-Dist: libpysal>=4.12
+Requires-Dist: esda>=2.6
+Requires-Dist: statsmodels>=0.14
+Requires-Dist: requests>=2.28
+
 # Censo Senso RMR
 
 Pipeline reprodutível para tratamento, integração, análise territorial e produção de tabelas e mapas a partir do Censo Demográfico 2022 e de camadas territoriais associadas à Região Metropolitana do Recife (RMR).

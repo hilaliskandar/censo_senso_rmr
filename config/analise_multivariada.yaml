@@ -1,0 +1,83 @@
+pca:
+  material_saneamento:
+    variaveis: [DIM_AGUA, DIM_SANITARIA, DIM_RESIDUOS]
+    componente: PC_MATERIAL_SANEAMENTO
+    n_completos_historico: 7096
+    kmo_historico: 0.6192
+    variancia_pc1_historica: 0.5568
+    orientacao_positiva: [DIM_AGUA, DIM_SANITARIA, DIM_RESIDUOS]
+    decisao: "1 PC exploratória; DIM_FISICA permanece separada"
+  entorno_basico:
+    variaveis: [pct_sem_pavimentacao, pct_sem_bueiro, pct_sem_calcada]
+    componente: PC_ENTORNO_BASICO
+    n_completos_historico: 6886
+    kmo_historico: 0.6879
+    variancia_pc1_historica: 0.6848
+    orientacao_positiva: [pct_sem_pavimentacao, pct_sem_bueiro, pct_sem_calcada]
+  ciclo_vida:
+    variaveis: [PCT_0_14, PCT_60_MAIS]
+    componente: PC_CICLO_VIDA_JOVEM
+    n_completos_historico: 7082
+    kmo_historico: 0.5
+    variancia_pc1_historica: 0.885
+    orientacao_positiva: [PCT_0_14]
+    interpretacao: "eixo jovem versus envelhecido; sem sinal normativo"
+
+exclusoes_pca:
+  - DIM_FISICA
+  - PCT_RESP_FEM
+  - PCT_PRETA_PARDA
+  - SETOR_FCU
+  - DENS_ADJ
+  - PCT_AREA_DOM
+  - LISA
+  - Moran
+
+tipologias:
+  principal:
+    variaveis:
+      - DESV_RENDA_RANK
+      - TAXA_NAO_ALF_15_MAIS
+      - PC_MATERIAL_SANEAMENTO
+      - PCT_6MAIS_MORADORES
+      - PC_CICLO_VIDA_JOVEM
+      - PCT_DOM_UNIPESSOAL
+      - PCT_DOM_ESTENDIDA
+      - PCT_RESP_SEM_CONJ_COM_FILHOS
+    cobertura_historica: 6567
+  enriquecida:
+    herda: principal
+    adiciona:
+      - PC_ENTORNO_BASICO
+      - pct_sem_arvores
+    cobertura_historica: 6389
+    ressalva: "A aba Metodologia menciona iluminação, mas a aba Variáveis registra 10 variáveis e não inclui pct_sem_iluminacao; a matriz efetiva registrada é a referência operacional."
+  padronizacao: zscore
+  k_testados: [4, 5, 6, 7, 8]
+  k_selecionado_historico: 4
+  kmeans_n_init: 50
+  algoritmo_referencia: kmeans
+  algoritmo_comparacao: ward
+  metricas: [silhouette, calinski_harabasz, davies_bouldin, ari_kmeans_ward, pct_cluster_minimo]
+  selecao_k: "multicritério; fórmula histórica de score ainda não formalizada no corpus recuperado"
+
+estabilidade:
+  referencia: "k-means k=4 da Fase 7"
+  cenarios:
+    - transformacao_percentil
+    - ward
+    - leave_one_variable_out
+    - leave_one_domain_out
+    - bootstrap
+  bootstrap:
+    repeticoes: 30
+    fracao_amostra: 0.80
+    reposicao: false
+    ajustar_scaler_na_amostra: true
+    prever_universo_completo: true
+  alinhamento_rotulos: hungaro
+  robusta_min: 0.80
+  intermediaria_min: 0.60
+  fronteira_percentual: 0.20
+  classificacao_robustez: persistencia_estrutural
+  observacao: "Persistência bootstrap mede sensibilidade amostral e não substitui persistência estrutural."

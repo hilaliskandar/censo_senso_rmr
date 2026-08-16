@@ -1,0 +1,48 @@
+espacial:
+  unidade: CD_SETOR
+  geometria:
+    duplicatas: dissolver_por_chave
+    crs_analitico: "adequado_a_distancias_quando_knn"
+  pesos:
+    principal:
+      tipo: queen
+      transformacao: row_standardized
+    sensibilidade:
+      tipo: knn
+      k: 6
+      simetrizar: true
+      transformacao: row_standardized
+  permutacoes: 999
+  pseudo_p: bilateral
+  alpha: 0.05
+  fases:
+    exploratoria_historica:
+      multiplas_comparacoes: sem_correcao
+    consolidada:
+      multiplas_comparacoes: fdr_bh
+      alpha_fdr: 0.05
+  estabilidade:
+    mesma_classe: true
+    significativo_duplo: true
+    jaccard_significativos: true
+  variaveis_univariadas_historicas:
+    - RENDA_MEDIANA_NOVA
+    - DESVANTAGEM_RENDA
+    - MEDIANA_ABAIXO_1212
+    - Q1_OPER_RENDA
+    - CV_RENDA
+    - TAXA_NAO_ALF_15_MAIS
+    - PCT_PRETA_PARDA
+    - NUCLEO_ESTAVEL_VULN
+    - PRECARIEDADE_MATERIAL_ALTA
+  pares_bivariados_historicos:
+    - [DESVANTAGEM_RENDA_CONT, TAXA_NAO_ALF_15_MAIS]
+    - [DESVANTAGEM_RENDA_CONT, PRECARIEDADE_MATERIAL_ALTA]
+    - [TAXA_NAO_ALF_15_MAIS, PRECARIEDADE_MATERIAL_ALTA]
+    - [NUCLEO_ESTAVEL_VULN, PRECARIEDADE_MATERIAL_ALTA]
+    - [PCT_PRETA_PARDA, PRECARIEDADE_MATERIAL_ALTA]
+    - [PCT_PRETA_PARDA, TAXA_NAO_ALF_15_MAIS]
+  cautelas:
+    - "Classes HH/LL/HL/LH descrevem associação espacial local e não causalidade."
+    - "PCT_PRETA_PARDA é composição racial, não componente de vulnerabilidade."
+    - "Desvantagem econômica baseada na mediana do responsável não equivale a renda domiciliar ou pobreza."
