@@ -9,6 +9,8 @@ from typing import Iterable
 import numpy as np
 import pandas as pd
 
+from .io_ibge import detectar_separador
+
 
 @dataclass(frozen=True)
 class ResultadoRegressao:
@@ -54,12 +56,7 @@ def comparar_dataframes(
     atol: float = 1e-8,
     rtol: float = 1e-7,
 ) -> ResultadoRegressao:
-    """Compara dois produtos pelo universo, esquema e valores.
-
-    Colunas numéricas usam ``np.isclose`` com tolerâncias explícitas. Demais
-    colunas exigem igualdade após normalização de ausentes. A chave deve ser
-    única em ambos os lados.
-    """
+    """Compara dois produtos pelo universo, esquema e valores."""
     for nome, df in (("novo", novo), ("referência", referencia)):
         if chave not in df.columns:
             raise ValueError(f"Chave {chave!r} ausente em {nome}.")
@@ -84,7 +81,11 @@ def comparar_dataframes(
     apenas_r = kr - kn
 
     comum = n[[chave, *comparaveis]].merge(
-        r[[chave, *comparaveis]], on=chave, how="inner", suffixes=("__novo", "__ref"), validate="one_to_one"
+        r[[chave, *comparaveis]],
+        on=chave,
+        how="inner",
+        suffixes=("__novo", "__ref"),
+        validate="one_to_one",
     )
 
     div_num = 0
@@ -98,10 +99,9 @@ def comparar_dataframes(
         if pd.api.types.is_numeric_dtype(a) and pd.api.types.is_numeric_dtype(b):
             av = a.to_numpy(dtype=float, na_value=np.nan)
             bv = b.to_numpy(dtype=float, na_value=np.nan)
-            ambos_nan = np.isnan(av) & np.isnan(bv)
             iguais = np.isclose(av, bv, rtol=rtol, atol=atol, equal_nan=True)
             div_num += int((~iguais).sum())
-            validos = ~(np.isnan(av) | np.isnan(bv) | ambos_nan)
+            validos = ~(np.isnan(av) | np.isnan(bv))
             if validos.any():
                 abs_err = np.abs(av[validos] - bv[validos])
                 rel_err = _erro_relativo(av[validos], bv[validos], atol)
@@ -128,6 +128,20 @@ def comparar_dataframes(
     )
 
 
+def _ler_csv_auto(caminho: str | Path, chave: str) -> pd.DataFrame:
+    caminho = Path(caminho)
+    sep = detectar_separador(caminho)
+    decimal = "," if sep == ";" else "."
+    return pd.read_csv(
+        caminho,
+        sep=sep,
+        decimal=decimal,
+        encoding="utf-8-sig",
+        dtype={chave: "string", "COD_MUN": "string"},
+        low_memory=False,
+    )
+
+
 def comparar_csvs(
     novo: str | Path,
     referencia: str | Path,
@@ -137,7 +151,6 @@ def comparar_csvs(
     atol: float = 1e-8,
     rtol: float = 1e-7,
 ) -> ResultadoRegressao:
-    kwargs = {"dtype": {chave: "string"}}
-    a = pd.read_csv(novo, **kwargs)
-    b = pd.read_csv(referencia, **kwargs)
+    a = _ler_csv_auto(novo, chave)
+    b = _ler_csv_auto(referencia, chave)
     return comparar_dataframes(a, b, chave=chave, colunas=colunas, atol=atol, rtol=rtol)
