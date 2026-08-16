@@ -19,7 +19,8 @@ dependencies = [
   "matplotlib>=3.9",
   "libpysal>=4.12",
   "esda>=2.6",
-  "statsmodels>=0.14"
+  "statsmodels>=0.14",
+  "requests>=2.28"
 ]
 
 [tool.setuptools.packages.find]
