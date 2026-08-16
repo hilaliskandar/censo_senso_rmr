@@ -40,7 +40,7 @@ def _caminhos_obrigatorios(spec: dict) -> tuple[str, ...]:
     pasta = spec.get("pasta_drive")
     nomes = spec.get("obrigatorios", [])
     if pasta:
-        return tuple(str(Path(pasta) / nome) for nome in nomes)
+        return tuple((Path(pasta) / nome).as_posix() for nome in nomes)
     return tuple(nomes)
 
 

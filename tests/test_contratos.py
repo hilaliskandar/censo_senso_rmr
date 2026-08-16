@@ -21,8 +21,8 @@ def test_verificacao_identifica_arquivo_ausente(tmp_path: Path):
 
     v = verificar_produto(tmp_path, manifesto, "demo")
     assert not v.ok
-    assert v.presentes == ("a.csv",)
-    assert v.ausentes == ("b.json",)
+    assert v.presentes == ("03_Tabelas_Indicadores/a.csv",)
+    assert v.ausentes == ("03_Tabelas_Indicadores/b.json",)
 
 
 def test_exigir_produto_falha_quando_contrato_nao_foi_atendido(tmp_path: Path):
