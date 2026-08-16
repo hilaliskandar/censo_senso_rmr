@@ -25,6 +25,9 @@ dependencies = [
   "odfpy>=1.4"
 ]
 
+[project.scripts]
+censo-rmr = "censo_rmr.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
