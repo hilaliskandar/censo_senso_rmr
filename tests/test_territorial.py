@@ -24,15 +24,31 @@ def test_preparar_atributos_malha_preserva_fcu_e_area():
     assert out.loc[0, "AREA_KM2"] == 0.2
 
 
-def test_preparar_atributos_malha_recusa_duplicidade():
+def test_preparar_atributos_malha_consolida_duplicidade_consistente():
+    df = pd.DataFrame(
+        {
+            "CD_SETOR": ["1", "1", "2"],
+            "AREA_KM2": [0.2, 0.2, 0.3],
+            "CD_FCU": ["", "", "26002"],
+            "NM_FCU": ["", "", "Teste"],
+        }
+    )
+    out, aud = preparar_atributos_malha(df)
+    assert len(out) == 2
+    assert aud.registros == 3
+    assert aud.setores_unicos == 2
+    assert aud.duplicados == 2
+
+
+def test_preparar_atributos_malha_recusa_duplicidade_conflitante():
     df = pd.DataFrame(
         {
             "CD_SETOR": ["1", "1"],
-            "AREA_KM2": [0.2, 0.2],
-            "CD_FCU": ["", ""],
+            "AREA_KM2": [0.2, 0.3],
+            "CD_FCU": ["", "26001"],
         }
     )
-    with pytest.raises(ValueError, match="duplicidade"):
+    with pytest.raises(ValueError, match="conflitantes"):
         preparar_atributos_malha(df)
 
 
