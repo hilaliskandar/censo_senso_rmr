@@ -11,7 +11,8 @@ from typing import Mapping
 import pandas as pd
 
 
-COLUNAS_FONTE_DEMOGRAFIA = tuple(["CD_SETOR"] + [f"V010{i:02d}" for i in range(6, 42)])
+COLUNAS_DEMOGRAFIA = tuple(f"V010{i:02d}" for i in range(6, 42))
+COLUNAS_FONTE_DEMOGRAFIA = tuple(["CD_SETOR"] + list(COLUNAS_DEMOGRAFIA))
 
 FAIXAS_TOTAL = {
     "0_4": "V01031",
@@ -32,8 +33,17 @@ def _pct(num: pd.Series, den: pd.Series) -> pd.Series:
     return 100 * num / den.where(den != 0)
 
 
+def normalizar_chave_setor(df: pd.DataFrame) -> pd.DataFrame:
+    """Normaliza a chave original `CD_setor` para a convenção canônica `CD_SETOR`."""
+    if "CD_SETOR" in df.columns:
+        return df
+    if "CD_setor" in df.columns:
+        return df.rename(columns={"CD_setor": "CD_SETOR"})
+    raise ValueError("Chave setorial ausente: esperado 'CD_SETOR' ou 'CD_setor'.")
+
+
 def validar_colunas(df: pd.DataFrame) -> None:
-    faltantes = [c for c in COLUNAS_FONTE_DEMOGRAFIA if c not in df.columns]
+    faltantes = [c for c in COLUNAS_DEMOGRAFIA if c not in df.columns]
     if faltantes:
         raise ValueError(f"Colunas demográficas obrigatórias ausentes: {faltantes}")
 
@@ -47,14 +57,15 @@ def preparar_demografia_setorial(
     Valores não numéricos, inclusive marcações de supressão como ``X``, são
     tratados como ausentes e nunca convertidos em zero.
     """
-    validar_colunas(bruto)
-    df = bruto.loc[:, list(COLUNAS_FONTE_DEMOGRAFIA)].copy()
+    normalizado = normalizar_chave_setor(bruto)
+    validar_colunas(normalizado)
+    df = normalizado.loc[:, ["CD_SETOR", *COLUNAS_DEMOGRAFIA]].copy()
     df["CD_SETOR"] = df["CD_SETOR"].astype("string")
     df["COD_MUN"] = df["CD_SETOR"].str[:7]
     df = df[df["COD_MUN"].isin(municipios)].copy()
     df["MUNICIPIO"] = df["COD_MUN"].map(municipios)
 
-    for c in COLUNAS_FONTE_DEMOGRAFIA[1:]:
+    for c in COLUNAS_DEMOGRAFIA:
         df[c] = pd.to_numeric(df[c], errors="coerce")
 
     df["POP_TOTAL"] = df["V01006"]
