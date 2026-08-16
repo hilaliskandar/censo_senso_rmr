@@ -21,6 +21,7 @@ fontes:
     ultima_modificacao_indice_ftp: "2026-05-20 10:37"
     chave_canonica: CD_SETOR
     uso: "Atributos básicos e controles gerais do setor; validar todas as colunas contra o dicionário geral."
+    politica_versao: "Usar a versão 20260520 ou revisão posterior explicitamente auditada; não reutilizar silently arquivos básicos anteriores."
 
   demografia:
     provedor: IBGE
@@ -79,7 +80,8 @@ fontes:
     ultima_modificacao_indice_ftp: "2025-04-17 09:52"
     chave_canonica: CD_SETOR
     intervalo_variaveis: "V00090-V00495"
-    observacao: "Usar a versão corrigida de 17/04/2025; o IBGE registra correção de variáveis anteriormente zeradas."
+    observacao: "Usar a versão corrigida de 17/04/2025; o IBGE registra correção de variáveis anteriormente zeradas, incluindo V00236 e outras do bloco."
+    politica_versao: "Versões anteriores à correção de 17/04/2025 são incompatíveis com o pipeline e devem gerar falha de contrato."
 
   caracteristicas_domicilio_3:
     provedor: IBGE
@@ -89,6 +91,7 @@ fontes:
     chave_canonica: CD_SETOR
     intervalo_variaveis: "V00496-V00643"
     observacao: "Usar a versão corrigida de 17/04/2025; o IBGE registra correção de variáveis anteriormente zeradas."
+    politica_versao: "Versões anteriores à correção de 17/04/2025 são incompatíveis com o pipeline e devem gerar falha de contrato."
 
   dicionario_malha_atributos:
     provedor: IBGE
@@ -165,4 +168,5 @@ politica:
   - "URL não verificada não deve ser inferida por padrão de nome; a aquisição deve falhar de forma explícita até sua confirmação."
   - "Fontes temáticas diferentes possuem universos distintos e não devem ser fundidas como se tivessem o mesmo denominador."
   - "Quando o FTP mantiver versões antigas e versões datadas no mesmo diretório, a versão escolhida deve ser explicitada no manifesto e não substituída silenciosamente."
+  - "Arquivos de características do domicílio 2 e 3 anteriores à correção de 17/04/2025 são rejeitados pelo contrato."
   - "AREA_DOM deve ser obtida da publicação oficial de área territorial efetivamente domiciliada; não deve mais ser tratada como variável a reconstruir por hipótese local."
