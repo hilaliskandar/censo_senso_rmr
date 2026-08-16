@@ -2,10 +2,11 @@ fontes:
   demografia:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Agregados por Setores Censitários
+    url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_demografia_BR.zip"
     arquivo_historico: Agregados_por_setores_demografia_BR.parquet.bin
-    chave: CD_SETOR
+    chave_original: CD_setor
+    chave_canonica: CD_SETOR
     variaveis:
-      - CD_SETOR
       - V01006
       - V01007
       - V01008
@@ -47,15 +48,18 @@ fontes:
   composicao_domestica:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Agregados por Setores Censitários
+    url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_parentesco_BR.zip"
     arquivo_historico: Agregados_por_setores_parentesco_BR.parquet.bin
-    chave: CD_SETOR
+    chave_canonica: CD_SETOR
     observacao: "Unidades coletivas são preservadas na fonte, mas excluídas dos denominadores específicos definidos no módulo."
 
   renda_responsavel:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Rendimento do responsável pelo domicílio
+    url_csv_zip: null
+    url_status: "pendente_de_verificacao_direta_no_indice_oficial"
     arquivo_historico: Agregados_por_setores_renda_responsavel_BR.parquet.bin
-    chave: CD_SETOR
+    chave_canonica: CD_SETOR
     variaveis:
       V06001: "Pessoas responsáveis em domicílios particulares permanentes ocupados"
       V06002: "Moradores em domicílios particulares permanentes ocupados"
@@ -66,3 +70,4 @@ politica:
   - "A descrição da variável deve ser validada contra o dicionário oficial do IBGE antes da execução."
   - "Mudança de esquema ou ausência de variável obrigatória deve interromper a etapa dependente."
   - "Arquivos baixados devem ser registrados com URL, data de aquisição e checksum no manifesto da execução."
+  - "URL não verificada não deve ser inferida por padrão de nome; a aquisição deve falhar de forma explícita até sua confirmação."
