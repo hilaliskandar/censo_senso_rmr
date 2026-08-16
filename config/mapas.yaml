@@ -1,0 +1,115 @@
+cartografia:
+  chave: CD_SETOR
+  crs_publicacao: "EPSG:4674"
+  geometria:
+    regra_duplicatas: dissolve_por_CD_SETOR
+    simplificar: false
+    imputar_sem_dado: false
+  fonte_malha:
+    status: "dependencia_a_resolver_por_configuracao"
+    nome_historico: "PE_setores_CD2022.gpkg"
+  notas:
+    fonte_padrao: "Fonte: IBGE, Censo Demográfico 2022. Elaboração própria."
+    sem_dado: "Setores sem informação permanecem sem valor; não há imputação."
+    fcu: "FCU é recorte territorial transversal e não medida direta de precariedade."
+    entorno: "Classificação relativa à RMR; alta = pelo menos três dimensões centrais no quintil superior regional."
+    renda: "Rendimento mediano da pessoa responsável; não equivale a renda domiciliar ou per capita."
+    densidade: "Densidade ajustada é indicador territorial contextual e não medida direta de vulnerabilidade."
+
+mapas_municipais_nucleo:
+  - id: populacao_setorial
+    campo: POP_TOTAL
+    tipo: continuo
+    titulo: "{municipio}: população observada por setor censitário — Censo 2022"
+    legenda: "Moradores observados"
+    arquivo: "MAPA_{slug}_POP_SETORIAL_2022.png"
+    nota: [fonte_padrao, sem_dado]
+  - id: precariedade_material
+    campo: PRECARIEDADE_MATERIAL_ALTA
+    tipo: binario
+    titulo: "{municipio}: alta precariedade material relativa por setor — Censo 2022"
+    rotulos: {0: "Baixa ou não identificada", 1: "Alta precariedade material"}
+    arquivo: "MAPA_{slug}_PRECARIEDADE_MATERIAL_2022.png"
+    nota: [fonte_padrao, sem_dado]
+  - id: precariedade_entorno
+    campo: precariedade_entorno
+    tipo: categorico
+    categorias: ["Baixa ou não identificada", "Moderada", "Alta"]
+    titulo: "{municipio}: precariedade relativa do entorno por setor — Censo 2022"
+    arquivo: "MAPA_{slug}_PRECARIEDADE_ENTORNO_2022.png"
+    nota: [fonte_padrao, entorno, sem_dado]
+  - id: fcu
+    campo: SETOR_FCU
+    tipo: binario
+    titulo: "{municipio}: setores em Favelas e Comunidades Urbanas — Censo 2022"
+    rotulos: {0: "Não FCU", 1: "FCU"}
+    arquivo: "MAPA_{slug}_FCU_2022.png"
+    nota: [fonte_padrao, fcu, sem_dado]
+  - id: nao_alfabetizacao
+    campo: TAXA_NAO_ALF_15_MAIS
+    tipo: continuo
+    titulo: "{municipio}: não alfabetização da população de 15 anos ou mais — Censo 2022"
+    legenda: "Não alfabetização (%)"
+    arquivo: "MAPA_{slug}_NAO_ALFABETIZACAO_2022.png"
+    nota: [fonte_padrao, sem_dado]
+  - id: renda_mediana
+    campo: RENDA_MEDIANA_NOVA
+    tipo: continuo
+    titulo: "{municipio}: rendimento mediano da pessoa responsável por setor — Censo 2022"
+    legenda: "Rendimento mediano (R$)"
+    arquivo: "MAPA_{slug}_RENDA_MEDIANA_2022.png"
+    nota: [fonte_padrao, renda, sem_dado]
+  - id: densidade_ajustada
+    campo: DENS_ADJ
+    tipo: continuo
+    titulo: "{municipio}: densidade populacional ajustada por setor — Censo 2022"
+    legenda: "Hab./km²"
+    arquivo: "MAPA_{slug}_DENSIDADE_AJUSTADA_2022.png"
+    nota: [fonte_padrao, densidade, sem_dado]
+
+mapas_municipais_complementares:
+  - id: preta_parda
+    campo: PCT_PRETA_PARDA
+    tipo: continuo
+    titulo: "{municipio}: participação da população preta e parda por setor — Censo 2022"
+    legenda: "População preta e parda (%)"
+    arquivo: "MAPA_{slug}_PRETA_PARDA_2022.png"
+    nota: [fonte_padrao, sem_dado]
+  - id: pct_60_mais
+    campo: PCT_60_MAIS
+    tipo: continuo
+    titulo: "{municipio}: população com 60 anos ou mais por setor — Censo 2022"
+    legenda: "População com 60 anos ou mais (%)"
+    arquivo: "MAPA_{slug}_PCT_60_MAIS_2022.png"
+    nota: [fonte_padrao, sem_dado]
+
+mapas_regionais_avancados:
+  - id: lisa
+    tipo: categorico
+    campo: CLASSE_LISA
+    categorias: [HH, LL, HL, LH, NS]
+    status: "gerar_por_variavel_e_especificacao_de_pesos"
+  - id: lisa_estabilidade
+    tipo: binario
+    campo: CLUSTER_ESTAVEL_SIGNIFICATIVO
+    status: "queen_vs_knn6"
+  - id: tipologia
+    tipo: categorico
+    campo: CLUSTER_BASE
+    status: "rotulos_devem_ser_interpretados_por_perfil_e_nao_por_ordem"
+  - id: robustez_tipologia
+    tipo: categorico
+    campo: ROBUSTEZ
+    categorias: ["Robusta", "Intermediária", "Instável"]
+  - id: dasimetria_populacao
+    tipo: continuo
+    status: "produto_cartografico_derivado; exige modulo_especifico_e_auditoria_de_conservacao"
+
+parametros_renderizacao:
+  dpi: 220
+  figsize: [8, 8]
+  borda_setor: true
+  linewidth: 0.1
+  missing_label: "Sem dado"
+  classificacao_continua_padrao: "continua"
+  observacao: "Quebras discretas específicas não são inferidas quando não recuperadas dos scripts históricos."
