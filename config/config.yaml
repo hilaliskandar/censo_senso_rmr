@@ -8,6 +8,10 @@ drive:
   pasta_raiz_id: "1CLsrG4b9bbGzWo0dwmrSHmnRfTE6pWTs"
   pasta_raiz_nome: "Censo_2022_Setores_RMR"
   pastas:
+    pipeline: "00_Pipeline"
+    cache_ibge: "00_Pipeline/01_Cache_IBGE"
+    regressao: "00_Pipeline/02_Regressao"
+    logs_manifestos: "00_Pipeline/03_Logs_Manifestos"
     inspecao_dicionarios: "01_Inspecao_Dicionarios"
     recortes_rmr: "02_Recortes_RMR"
     tabelas_indicadores: "03_Tabelas_Indicadores"
@@ -16,6 +20,11 @@ drive:
     revisoes_metodologicas: "06_Revisoes_Metodologicas"
     analise_espacial: "07_Analise_Espacial"
     relatorio_consolidado: "08_Relatorio_Consolidado"
+  ids_pipeline:
+    pipeline: "1pgdykQWeTCeWovoCgCX7SgB78-2vtfv0"
+    cache_ibge: "1E1sbXY6FFXFCdVCuBYdDUgY3dQWswNdH"
+    regressao: "15fBizccw4krcxZijRTXkdJ_Ldl03ckAK"
+    logs_manifestos: "1nRROiYGTRydCiFYqc94046-iB6Hze-d5"
 
 github:
   repositorio: "hilaliskandar/censo_senso_rmr"
@@ -44,6 +53,7 @@ execucao:
   reprocessar_indicadores: true
   reprocessar_mapas: true
   interromper_em_erro_qa: true
+  sobrescrever_produtos_historicos: false
 
 parametros_operacionais:
   populacao_minima_setor_heterogeneidade: 100
@@ -57,3 +67,4 @@ parametros_operacionais:
 observacoes:
   - "Parâmetros operacionais devem ser distinguidos de prescrições derivadas da literatura."
   - "Valores de corte substantivos não devem ser embutidos em código; devem ser documentados e submetidos a análise de sensibilidade."
+  - "Produtos históricos não podem ser sobrescritos durante a fase de regressão."
