@@ -36,6 +36,9 @@ produtos:
       spreadsheet_id: "1LMMhoTdBVDBIYlZpOIxcApVqtWkANupG5a7pg7dCaNA"
       aba_setorial: "Setores"
       linhas_incluindo_cabecalho: 7209
+      csv_referencia_id: "17jeNMPHdJj_Vu5GjjqatiKQSoBDVXOew"
+      csv_referencia_caminho: "00_Pipeline/02_Regressao/RMR_CENSO2022_EQUIDADE_FCU_REFERENCIA.csv"
+      setores_referencia: 7208
     chave: CD_SETOR
     colunas_centrais:
       - POP_TOTAL
@@ -56,7 +59,9 @@ produtos:
       - TAXA_NAO_ALF_PRETA_PARDA
       - GAP_NAO_ALF_PPI_BRANCA
       - SETOR_FCU
-    gate_regressao: "comparacao integral por CD_SETOR; tolerancia numerica deve ser declarada"
+    tolerancia_abs: 1.0e-9
+    tolerancia_rel: 1.0e-9
+    gate_regressao: "comparacao integral por CD_SETOR; tolerancia numerica declarada; divergencias diagnosticadas por coluna e setor"
 
   densidade_ajustada:
     etapa: densidade_ajustada
@@ -65,6 +70,9 @@ produtos:
       spreadsheet_id: "1PhQ9NQisgNEqtyJ-ycWJ1zbLrXrnJhTsQMzhsGe6JGU"
       aba_setorial: "Setores"
       linhas_incluindo_cabecalho: 7005
+      csv_referencia_id: "1wCf6dk7ONY1eTvEIS5dzS5DY5aSRsJlN"
+      csv_referencia_caminho: "00_Pipeline/02_Regressao/RMR_CENSO2022_DENSIDADE_AJUSTADA_REFERENCIA.csv"
+      setores_referencia: 7004
     chave: CD_SETOR
     colunas_centrais:
       - AREA_DOM
@@ -75,6 +83,8 @@ produtos:
       - FATOR
       - SETOR_FCU
       - ALTA_DENS_ADJ
+    tolerancia_abs: 1.0e-9
+    tolerancia_rel: 1.0e-9
     gate_regressao: "comparar cobertura, area e densidades; divergencias devem ser explicadas pela versao da fonte, nunca absorvidas silenciosamente"
 
   base_espacial:
