@@ -1,5 +1,6 @@
 import pandas as pd
 
+from censo_rmr.csv_padrao import ler_csv_rmr
 from censo_rmr.etapas_densidade import executar_densidade_oficial
 
 
@@ -25,7 +26,7 @@ def test_executar_densidade_oficial_compara_recomposicao(tmp_path, monkeypatch):
         limiar_alta=15000.0,
     )
 
-    out = pd.read_csv(res["setorial"], sep=";", dtype={"CD_SETOR": "string"})
+    out = ler_csv_rmr(res["setorial"])
     assert out.loc[0, "DENS_ADJ"] == 10000.0
     assert out.loc[0, "DENS_CONV"] == 5000.0
     assert out.loc[0, "PCT_AREA_DOM"] == 50.0
