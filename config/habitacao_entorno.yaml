@@ -1,0 +1,102 @@
+habitacao:
+  denominador_principal: V00001
+  indicadores:
+    PCT_IMPROVISADOS:
+      dimensao: precariedade_fisica
+      formula: "100*V00002/(V00001+V00002)"
+      status: prioritario
+    PCT_CORTICO:
+      dimensao: precariedade_fisica
+      formula: "100*V00050/V00001"
+      status: prioritario
+    PCT_ESTRUTURA_DEGRADADA:
+      dimensao: precariedade_fisica
+      formula: "100*V00052/V00001"
+      status: prioritario
+    MORADORES_POR_DPPO:
+      dimensao: pressao_domiciliar
+      formula: "V00005/V00001"
+      status: contextual
+    PCT_DPPO_6MAIS:
+      dimensao: pressao_domiciliar
+      formula: "100*(V00022+V00023+V00024+V00025+V00026)/V00001"
+      status: contextual
+    PCT_SEM_LIGACAO_REDE_AGUA:
+      dimensao: agua
+      formula: "100*V00464/V00001"
+      status: prioritario
+    PCT_AGUA_SO_TERRENO:
+      dimensao: agua
+      formula: "100*V00200/V00001"
+      status: prioritario
+    PCT_AGUA_NAO_ENCANADA:
+      dimensao: agua
+      formula: "100*V00201/V00001"
+      status: prioritario
+    PCT_BANHEIRO_COMPARTILHADO:
+      dimensao: banheiro
+      formula: "100*V00236/V00001"
+      status: prioritario
+    PCT_SO_SANITARIO_BURACO:
+      dimensao: banheiro
+      formula: "100*V00237/V00001"
+      status: prioritario
+    PCT_SEM_BANHEIRO_SANITARIO:
+      dimensao: banheiro
+      formula: "100*V00238/V00001"
+      status: prioritario
+    PCT_ESGOTO_PRECARIO:
+      dimensao: esgotamento
+      formula: "100*(V00312+V00313+V00314+V00315+V00316)/V00001"
+      status: prioritario
+    PCT_ESGOTO_VALA_CORPO_DAGUA:
+      dimensao: esgotamento
+      formula: "100*(V00313+V00314)/V00001"
+      status: prioritario
+    PCT_LIXO_INADEQUADO:
+      dimensao: residuos
+      formula: "100*(V00399+V00400+V00401+V00402)/V00001"
+      status: prioritario
+    PCT_LIXO_AREA_PUBLICA:
+      dimensao: residuos
+      formula: "100*V00401/V00001"
+      status: prioritario
+  cautelas:
+    - "Não há número de dormitórios nos agregados utilizados; moradores por DPPO e 6+ moradores são proxies, não adensamento excessivo por dormitório."
+    - "Poço, nascente e água de chuva não são automaticamente precariedade."
+    - "Fossa séptica não ligada à rede não é automaticamente inadequada."
+    - "V00316 e V00238 possuem sobreposição parcial e não devem ser somados mecanicamente."
+    - "Valores X do IBGE permanecem ausentes, nunca zero."
+
+entorno:
+  universo: "Moradores residentes em setores abrangidos pela Pesquisa Urbanística do Entorno"
+  denominador_referencia: V05200
+  dimensoes_centrais:
+    - pct_sem_pavimentacao
+    - pct_sem_bueiro
+    - pct_sem_iluminacao
+    - pct_sem_calcada
+    - pct_calcada_com_obstaculo
+    - pct_sem_arvores
+  contextuais:
+    - pct_sem_ponto_onibus_van
+    - pct_sem_sinalizacao_ciclovia
+    - pct_sem_rampa
+  limiar: P80_RMR
+  alta: "n_carencias_entorno_altas >= 3"
+  classes_historicas:
+    baixa: 0-1
+    moderada: 2
+    alta: 3-6
+  limiares_historicos_p80:
+    pct_sem_pavimentacao: 54.55908639523341
+    pct_sem_bueiro: 92.14655296178255
+    pct_sem_iluminacao: 2.005683104081274
+    pct_sem_calcada: 79.36625410910925
+    pct_calcada_com_obstaculo: 100.0
+    pct_sem_arvores: 93.0201131363922
+  observacoes:
+    - "Classificação relativa à RMR; não constitui padrão normativo de adequação urbana."
+    - "Obstáculo em calçada e rampa possuem cobertura inferior e não devem gerar imputação por zero."
+    - "Os limiares devem ser recalculados na execução e registrados no manifesto; os valores históricos servem para regressão."
+    - "A reconstrução dos percentuais brutos do entorno permanece separada até validação variável-a-variável dos numeradores oficiais."
