@@ -1,0 +1,68 @@
+fontes:
+  demografia:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários
+    arquivo_historico: Agregados_por_setores_demografia_BR.parquet.bin
+    chave: CD_SETOR
+    variaveis:
+      - CD_SETOR
+      - V01006
+      - V01007
+      - V01008
+      - V01009
+      - V01010
+      - V01011
+      - V01012
+      - V01013
+      - V01014
+      - V01015
+      - V01016
+      - V01017
+      - V01018
+      - V01019
+      - V01020
+      - V01021
+      - V01022
+      - V01023
+      - V01024
+      - V01025
+      - V01026
+      - V01027
+      - V01028
+      - V01029
+      - V01030
+      - V01031
+      - V01032
+      - V01033
+      - V01034
+      - V01035
+      - V01036
+      - V01037
+      - V01038
+      - V01039
+      - V01040
+      - V01041
+    tratamento_suprimidos: "X e outros valores não numéricos são ausentes, nunca zero"
+
+  composicao_domestica:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários
+    arquivo_historico: Agregados_por_setores_parentesco_BR.parquet.bin
+    chave: CD_SETOR
+    observacao: "Unidades coletivas são preservadas na fonte, mas excluídas dos denominadores específicos definidos no módulo."
+
+  renda_responsavel:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Rendimento do responsável pelo domicílio
+    arquivo_historico: Agregados_por_setores_renda_responsavel_BR.parquet.bin
+    chave: CD_SETOR
+    variaveis:
+      V06001: "Pessoas responsáveis em domicílios particulares permanentes ocupados"
+      V06002: "Moradores em domicílios particulares permanentes ocupados"
+      V06004: "Valor do rendimento nominal médio mensal das pessoas responsáveis com rendimento"
+    cautela: "V06004 não é renda domiciliar per capita nem média municipal diretamente agregável."
+
+politica:
+  - "A descrição da variável deve ser validada contra o dicionário oficial do IBGE antes da execução."
+  - "Mudança de esquema ou ausência de variável obrigatória deve interromper a etapa dependente."
+  - "Arquivos baixados devem ser registrados com URL, data de aquisição e checksum no manifesto da execução."
