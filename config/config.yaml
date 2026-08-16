@@ -1,0 +1,59 @@
+projeto:
+  nome: "Censo Senso RMR"
+  ano_censo: 2022
+  uf: "PE"
+  crs_preferencial: "EPSG:4674"
+
+drive:
+  pasta_raiz_id: "1CLsrG4b9bbGzWo0dwmrSHmnRfTE6pWTs"
+  pasta_raiz_nome: "Censo_2022_Setores_RMR"
+  pastas:
+    inspecao_dicionarios: "01_Inspecao_Dicionarios"
+    recortes_rmr: "02_Recortes_RMR"
+    tabelas_indicadores: "03_Tabelas_Indicadores"
+    mapas: "04_Mapas"
+    relatorios: "05_Relatorios"
+    revisoes_metodologicas: "06_Revisoes_Metodologicas"
+    analise_espacial: "07_Analise_Espacial"
+    relatorio_consolidado: "08_Relatorio_Consolidado"
+
+github:
+  repositorio: "hilaliskandar/censo_senso_rmr"
+
+territorio:
+  chave_setor: "CD_SETOR"
+  chave_municipio: "COD_MUN"
+  municipios_rmr:
+    "2600054": "Abreu e Lima"
+    "2601052": "Araçoiaba"
+    "2602902": "Cabo de Santo Agostinho"
+    "2603454": "Camaragibe"
+    "2606804": "Igarassu"
+    "2607604": "Ilha de Itamaracá"
+    "2607208": "Ipojuca"
+    "2607752": "Itapissuma"
+    "2607901": "Jaboatão dos Guararapes"
+    "2609402": "Moreno"
+    "2609600": "Olinda"
+    "2610707": "Paulista"
+    "2611606": "Recife"
+    "2613701": "São Lourenço da Mata"
+
+execucao:
+  reprocessar_fontes: false
+  reprocessar_indicadores: true
+  reprocessar_mapas: true
+  interromper_em_erro_qa: true
+
+parametros_operacionais:
+  populacao_minima_setor_heterogeneidade: 100
+  denominador_minimo_composicao: 20
+  responsaveis_minimos_renda: 20
+  fdr_alpha: 0.05
+  matriz_espacial_principal: "queen"
+  matriz_espacial_sensibilidade: "knn"
+  knn_k: 6
+
+observacoes:
+  - "Parâmetros operacionais devem ser distinguidos de prescrições derivadas da literatura."
+  - "Valores de corte substantivos não devem ser embutidos em código; devem ser documentados e submetidos a análise de sensibilidade."
