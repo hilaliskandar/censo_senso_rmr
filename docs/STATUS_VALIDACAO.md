@@ -79,7 +79,7 @@ A Nota metodológica n. 06 confirma os intervalos de variáveis por tema: alfabe
 
 ## 5. Controle de versões oficiais
 
-O pipeline rejeita silenciosamente versões antigas apenas no sentido de não aceitá-las: ele produz erro explícito quando uma fonte configurada não atende à revisão mínima auditada.
+O pipeline não aceita silenciosamente versões antigas: ele produz erro explícito quando uma fonte configurada não atende à revisão mínima auditada.
 
 Atualmente são exigidos:
 
@@ -139,7 +139,13 @@ O estudo histórico usa moradores como universo preferencial. O mapeamento fino 
 
 As âncoras são um teste rápido e não substituem a regressão integral dos universos históricos.
 
-## 11. Parâmetros históricos recuperados
+## 11. CI
+
+Após a integração dos executores de equidade/FCU e densidade, dois testes novos falharam inicialmente porque releram CSVs com `pandas.read_csv` sem o contrato regional de vírgula decimal. Os cálculos não divergiram. Os testes foram corrigidos para usar `ler_csv_rmr`, o mesmo leitor canônico empregado pelo pipeline.
+
+A execução subsequente do GitHub Actions concluiu com sucesso em `pytest -q`: **75 testes passaram**. Isso valida o estado unitário e de integração do código corrente, mas não substitui a regressão integral com os arquivos oficiais materializados no staging.
+
+## 12. Parâmetros históricos recuperados
 
 ### Rendimento revisado 2026
 
@@ -165,7 +171,7 @@ As âncoras são um teste rápido e não substituem a regressão integral dos un
 - kNN simétrico com 6 vizinhos como sensibilidade;
 - FDR como camada consolidada, sem apagar a saída exploratória histórica sem correção.
 
-## 12. Execução operacional
+## 13. Execução operacional
 
 O pacote expõe o comando `censo-rmr`:
 
@@ -181,7 +187,7 @@ censo-rmr --modo REPROCESSAR_EM_STAGING --repo <repo> --drive <Censo_2022_Setore
 
 A execução de staging grava em `00_Pipeline/02_Regressao/v1_upstream` e não promove arquivos para as pastas oficiais.
 
-## 13. Critério para promoção
+## 14. Critério para promoção
 
 Um módulo só deve ser considerado promovível quando cumprir simultaneamente:
 
