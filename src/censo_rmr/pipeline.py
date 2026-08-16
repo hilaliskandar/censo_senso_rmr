@@ -10,6 +10,7 @@ from .aquisicao import baixar_com_cache
 from .configuracao import carregar_configuracao
 from .contratos import carregar_produtos, verificar_produto
 from .csv_padrao import ler_csv_rmr
+from .etapas_densidade import executar_densidade_oficial
 from .etapas_equidade import executar_equidade_fcu
 from .etapas_iniciais import executar_composicao_domestica, executar_cruzamentos, executar_demografia, executar_renda
 from .fontes import carregar_manifesto_fontes, preparar_fonte_csv
@@ -115,6 +116,16 @@ def _fonte_manifesto(f) -> dict:
     }
 
 
+def _fonte_area_pronta(spec: dict) -> bool:
+    url = str(spec.get("url_download_direto", ""))
+    mapa = spec.get("mapa_colunas", {}) or {}
+    return (
+        url.startswith("http")
+        and "pendente" not in url.lower()
+        and {"CD_SETOR", "AREA_DOM"}.issubset(mapa)
+    )
+
+
 def reprocessar_primeiros_blocos(ctx: dict) -> dict:
     cfg = ctx["cfg"]
     drive = ctx["drive"]
@@ -163,8 +174,6 @@ def reprocessar_primeiros_blocos(ctx: dict) -> dict:
         denominador_minimo=params["denominador_minimo_composicao"],
     )
 
-    # Equidade/alfabetizacao usa fontes tematicas proprias; nenhum denominador e
-    # reaproveitado por conveniencia entre arquivos distintos.
     raca_fonte = preparar_fonte_csv("cor_ou_raca", fontes_cfg["cor_ou_raca"], cache, reprocessar=False)
     alfa_fonte = preparar_fonte_csv("alfabetizacao", fontes_cfg["alfabetizacao"], cache, reprocessar=False)
     malha_spec = fontes_cfg["malha_setores_pe"]
@@ -179,6 +188,28 @@ def reprocessar_primeiros_blocos(ctx: dict) -> dict:
         cfg.municipios,
         caminho_ancoras=repo / "config/ancoras_regressao.yaml",
     )
+
+    # Densidade e deliberadamente condicional: sem URL binaria e nomes de
+    # colunas confirmados da publicacao oficial, registra bloqueio e nao infere.
+    area_spec = fontes_cfg.get("area_domiciliada_densidade_ajustada", {})
+    if _fonte_area_pronta(area_spec):
+        area_arquivo = baixar_com_cache(area_spec["url_download_direto"], cache, reprocessar=False)
+        densidade = executar_densidade_oficial(
+            demo_df,
+            malha_arquivo.caminho,
+            area_arquivo.caminho,
+            area_spec["mapa_colunas"],
+            staging,
+            cfg.municipios,
+            caminho_ancoras=repo / "config/ancoras_regressao.yaml",
+        )["resultado"]
+        densidade["status"] = "executado_em_staging"
+    else:
+        densidade = {
+            "status": "bloqueado_por_fonte",
+            "motivo": "URL binaria e/ou mapa de colunas da tabela oficial de area domiciliada ainda nao confirmados",
+            "promocao_permitida": False,
+        }
 
     regressao = _comparar_primeiros_blocos(drive, staging)
     fontes_execucao = {
@@ -200,6 +231,7 @@ def reprocessar_primeiros_blocos(ctx: dict) -> dict:
         "fontes": fontes_execucao,
         "regressao": regressao,
         "equidade_fcu": equidade["resultado"],
+        "densidade_ajustada": densidade,
         "todos_produtos_centrais_equivalentes": all(v.get("ok", False) for v in regressao.values()),
         "ancoras_equidade_ok": bool(equidade["resultado"]["ancoras"].get("ok", False)),
         "promocao_permitida": False,
