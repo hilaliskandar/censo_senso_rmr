@@ -29,6 +29,54 @@ produtos:
     arquivos_obrigatorios:
       - 03_Tabelas_Indicadores/RMR_CENSO2022_RENDA_CRUZAMENTOS_HABITACIONAIS.csv
 
+  equidade_alfabetizacao_fcu:
+    etapa: equidade_alfabetizacao_fcu
+    referencia_historica_drive:
+      titulo: "RMR Censo 2022 — Sexo, cor ou raça e alfabetização — FCU e demais setores"
+      spreadsheet_id: "1LMMhoTdBVDBIYlZpOIxcApVqtWkANupG5a7pg7dCaNA"
+      aba_setorial: "Setores"
+      linhas_incluindo_cabecalho: 7209
+    chave: CD_SETOR
+    colunas_centrais:
+      - POP_TOTAL
+      - PCT_FEMININO
+      - PCT_BRANCA
+      - PCT_PRETA
+      - PCT_PARDA
+      - PCT_PRETA_PARDA
+      - PCT_AMARELA
+      - PCT_INDIGENA
+      - TAXA_NAO_ALF_15_MAIS
+      - TAXA_NAO_ALF_MASC
+      - TAXA_NAO_ALF_FEM
+      - GAP_NAO_ALF_FEM_MASC
+      - TAXA_NAO_ALF_BRANCA
+      - TAXA_NAO_ALF_PRETA
+      - TAXA_NAO_ALF_PARDA
+      - TAXA_NAO_ALF_PRETA_PARDA
+      - GAP_NAO_ALF_PPI_BRANCA
+      - SETOR_FCU
+    gate_regressao: "comparacao integral por CD_SETOR; tolerancia numerica deve ser declarada"
+
+  densidade_ajustada:
+    etapa: densidade_ajustada
+    referencia_historica_drive:
+      titulo: "RMR Censo 2022 — Densidade ajustada e vulnerabilidade"
+      spreadsheet_id: "1PhQ9NQisgNEqtyJ-ycWJ1zbLrXrnJhTsQMzhsGe6JGU"
+      aba_setorial: "Setores"
+      linhas_incluindo_cabecalho: 7005
+    chave: CD_SETOR
+    colunas_centrais:
+      - AREA_DOM
+      - AREA_TOTAL
+      - DENS_ADJ
+      - DENS_CONV
+      - PCT_AREA_DOM
+      - FATOR
+      - SETOR_FCU
+      - ALTA_DENS_ADJ
+    gate_regressao: "comparar cobertura, area e densidades; divergencias devem ser explicadas pela versao da fonte, nunca absorvidas silenciosamente"
+
   base_espacial:
     etapa: integracao_espacial
     referencias_historicas:
@@ -41,7 +89,7 @@ produtos:
 
   analise_espacial_avancada:
     etapa: analise_espacial
-    status: "codigo_historico_ainda_nao_localizado"
+    status: "procedimentos_reconstruidos_parcialmente; regressao_integral_pendente"
     referencias_historicas:
       - "07_Analise_Espacial: RMR Censo 2022 — Moran global e LISA — Fase 5"
       - "07_Analise_Espacial: RMR Censo 2022 — Estabilidade local do LISA e LISA bivariado"
@@ -54,3 +102,4 @@ politica:
   - "Produto obrigatório ausente deve gerar falha de QA da etapa."
   - "Produtos históricos são referências de regressão; não são considerados reproduzidos até comparação explícita."
   - "Mapas e tabelas destinados à publicação devem ser regeneráveis a partir de dados intermediários versionados por manifesto."
+  - "Cobertura diferente da referência histórica deve ser reportada antes da comparação de valores."
