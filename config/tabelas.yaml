@@ -1,0 +1,92 @@
+politica:
+  - "Cálculos pertencem aos módulos analíticos; a camada de tabelas não recalcula indicadores por média simples."
+  - "Percentuais municipais devem vir de contagens agregadas e denominadores compatíveis, salvo indicação metodológica explícita."
+  - "Cada tabela publicada deve registrar fonte, universo, unidade, período e ressalvas."
+  - "CD_SETOR e COD_MUN permanecem texto."
+
+pacote_municipal:
+  - id: demografia
+    titulo: "População residente e estrutura etária"
+    origem: demografia_municipal
+    colunas: [MUNICIPIO, POP_TOTAL, PCT_0_14, PCT_15_29, PCT_30_59, PCT_60_MAIS, RAZAO_DEPENDENCIA, INDICE_ENVELHECIMENTO]
+    unidade: "pessoas e percentuais"
+    fonte: "IBGE, Censo Demográfico 2022"
+  - id: composicao_domestica
+    titulo: "Composição das unidades domésticas e perfil das pessoas responsáveis"
+    origem: composicao_municipal
+    colunas: [MUNICIPIO, PCT_RESP_FEM, PCT_RESP_60_MAIS, PCT_DOM_SEM_CONJUGE, PCT_RESP_SEM_CONJ_COM_FILHOS, PCT_DOM_UNIPESSOAL, PCT_DOM_NUCLEAR, PCT_DOM_ESTENDIDA, PCT_DOM_COMPOSTA]
+    unidade: "percentual"
+    fonte: "IBGE, Censo Demográfico 2022"
+  - id: renda
+    titulo: "Rendimento da pessoa responsável e distribuição relativa dos setores"
+    origem: renda_2026_municipal
+    colunas: [MUNICIPIO, SETORES_RENDA_VALIDOS, MEDIANA_SETOR_RENDA_MEDIANA, PCT_MEDIANA_ABAIXO_1212, PCT_MEDIANA_IGUAL_1212, PCT_Q1_OPER_RENDA, MEDIANA_CV_RENDA]
+    unidade: "R$, percentuais e setores"
+    fonte: "IBGE, Censo Demográfico 2022 — divulgação de rendimento do responsável, 2026"
+    nota: "Rendimento da pessoa responsável; não equivale a renda domiciliar ou per capita."
+  - id: habitacao
+    titulo: "Indicadores de precariedade e inadequação habitacional observável"
+    origem: habitacao_municipal
+    colunas: [MUNICIPIO, PCT_IMPROVISADOS, PCT_CORTICO, PCT_ESTRUTURA_DEGRADADA, PCT_SEM_LIGACAO_REDE_AGUA, PCT_AGUA_NAO_ENCANADA, PCT_SEM_BANHEIRO_SANITARIO, PCT_ESGOTO_PRECARIO, PCT_LIXO_INADEQUADO]
+    unidade: "percentual"
+    fonte: "IBGE, Censo Demográfico 2022"
+    nota: "Indicadores mantidos por dimensão; não constituem automaticamente um índice único."
+  - id: fcu_equidade
+    titulo: "Favelas e Comunidades Urbanas e indicadores de equidade"
+    origem: equidade_municipal
+    colunas: [MUNICIPIO, POP_TOTAL, POP_FCU, PCT_POP_FCU, PCT_PRETA_PARDA, TAXA_NAO_ALF_15_MAIS]
+    unidade: "pessoas e percentuais"
+    fonte: "IBGE, Censo Demográfico 2022"
+    nota: "FCU, raça/cor e sexo são dimensões transversais; não são penalidades de um escore de vulnerabilidade."
+  - id: entorno
+    titulo: "Infraestrutura urbanística do entorno"
+    origem: entorno_municipal
+    colunas: [MUNICIPIO, pct_sem_pavimentacao, pct_sem_bueiro, pct_sem_iluminacao, pct_sem_calcada, pct_calcada_com_obstaculo, pct_sem_arvores, PCT_SETORES_ENTORNO_ALTO]
+    unidade: "percentual"
+    fonte: "IBGE, Censo Demográfico 2022 — Pesquisa Urbanística do Entorno"
+    nota: "Classificação relativa à RMR, não padrão normativo de adequação urbana."
+  - id: densidade
+    titulo: "Densidade convencional, densidade ajustada e ocupação efetiva do território"
+    origem: densidade_municipal
+    colunas: [MUNICIPIO, DENS_CONV_MEDIANA, DENS_ADJ_MEDIANA, PCT_AREA_DOM_MEDIANA, FATOR_MEDIANA, PCT_FATOR_GE2]
+    unidade: "hab./km², percentuais e razão"
+    fonte: "IBGE, Censo Demográfico 2022 e processamento espacial"
+    nota: "Densidade é contexto territorial e não medida direta de vulnerabilidade."
+  - id: sintese_territorial
+    titulo: "Síntese territorial dos principais indicadores"
+    origem: sintese_municipal
+    status: "montar_apenas_depois_das_tabelas_tematicas_validadas"
+
+pacote_regional_avancado:
+  - id: segregacao_racial
+    titulo: "Dissimilaridade, isolamento e exposição racial por município"
+    origem: indices_segregacao
+  - id: moran_global
+    titulo: "Autocorrelação espacial global dos indicadores selecionados"
+    origem: moran_global
+  - id: lisa_estabilidade
+    titulo: "Estabilidade local dos clusters LISA — queen e kNN6"
+    origem: estabilidade_lisa
+  - id: pca_dominios
+    titulo: "PCA exploratória por domínio e diagnóstico de dimensionalidade"
+    origem: relatorio_pca
+  - id: tipologias
+    titulo: "Tipologias territoriais e métricas de seleção de k"
+    origem: avaliacao_tipologias
+  - id: estabilidade_tipologias
+    titulo: "Persistência estrutural e amostral das tipologias"
+    origem: estabilidade_tipologias
+
+formatacao:
+  csv:
+    separador: ";"
+    decimal: ","
+    encoding: "utf-8-sig"
+  xlsx:
+    congelar_cabecalho: true
+    autofiltro: true
+    casas_decimais_percentual: 2
+    casas_decimais_valor: 2
+  abnt:
+    fonte_textual_padrao: "Fonte: IBGE, Censo Demográfico 2022. Elaboração própria."
+    observacao: "Numeração de tabelas é responsabilidade da composição final do relatório, não do arquivo analítico."
