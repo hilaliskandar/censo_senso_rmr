@@ -1,4 +1,4 @@
-"""Orquestração reproduzível dos blocos iniciais do pipeline RMR."""
+"""Orquestração reproduzível dos blocos do pipeline RMR em staging."""
 
 from __future__ import annotations
 
@@ -6,9 +6,11 @@ import json
 from enum import Enum
 from pathlib import Path
 
+from .aquisicao import baixar_com_cache
 from .configuracao import carregar_configuracao
 from .contratos import carregar_produtos, verificar_produto
 from .csv_padrao import ler_csv_rmr
+from .etapas_equidade import executar_equidade_fcu
 from .etapas_iniciais import executar_composicao_domestica, executar_cruzamentos, executar_demografia, executar_renda
 from .fontes import carregar_manifesto_fontes, preparar_fonte_csv
 from .regressao import comparar_csvs
@@ -34,7 +36,12 @@ def carregar_contexto(repo: str | Path, drive_raiz: str | Path) -> dict:
 def auditar_historico(ctx: dict) -> dict:
     drive = ctx["drive"]
     resultados = {}
-    for nome in ("demografia", "composicao_domestica", "renda", "cruzamentos_habitacionais"):
+    for nome in (
+        "demografia", "composicao_domestica", "renda", "cruzamentos_habitacionais",
+        "equidade_fcu", "densidade_ajustada",
+    ):
+        if nome not in ctx["produtos"].get("produtos", {}):
+            continue
         v = verificar_produto(drive, ctx["produtos"], nome)
         resultados[nome] = {
             "ok": v.ok,
@@ -97,13 +104,25 @@ def _comparar_primeiros_blocos(drive: Path, staging: Path) -> dict:
     return saida
 
 
+def _fonte_manifesto(f) -> dict:
+    return {
+        "url": f.arquivo_zip.url,
+        "arquivo": str(f.arquivo_zip.caminho),
+        "sha256": f.arquivo_zip.sha256,
+        "bytes": f.arquivo_zip.bytes,
+        "reutilizado": f.arquivo_zip.reutilizado,
+        "csv": str(f.csv),
+    }
+
+
 def reprocessar_primeiros_blocos(ctx: dict) -> dict:
     cfg = ctx["cfg"]
     drive = ctx["drive"]
+    repo = ctx["repo"]
     pastas = cfg.dados["drive"]["pastas"]
     params = cfg.dados["parametros_operacionais"]
     cache = drive / pastas["cache_ibge"]
-    staging = drive / pastas["regressao"] / "v0_primeiros_blocos"
+    staging = drive / pastas["regressao"] / "v1_upstream"
     staging.mkdir(parents=True, exist_ok=True)
 
     fontes_cfg = ctx["fontes"]["fontes"]
@@ -135,7 +154,7 @@ def reprocessar_primeiros_blocos(ctx: dict) -> dict:
     )
     renda_df = ler_csv_rmr(renda_paths["setorial"])
 
-    cruza_paths = executar_cruzamentos(
+    executar_cruzamentos(
         renda_df,
         comp_df,
         staging,
@@ -144,23 +163,45 @@ def reprocessar_primeiros_blocos(ctx: dict) -> dict:
         denominador_minimo=params["denominador_minimo_composicao"],
     )
 
+    # Equidade/alfabetizacao usa fontes tematicas proprias; nenhum denominador e
+    # reaproveitado por conveniencia entre arquivos distintos.
+    raca_fonte = preparar_fonte_csv("cor_ou_raca", fontes_cfg["cor_ou_raca"], cache, reprocessar=False)
+    alfa_fonte = preparar_fonte_csv("alfabetizacao", fontes_cfg["alfabetizacao"], cache, reprocessar=False)
+    malha_spec = fontes_cfg["malha_setores_pe"]
+    malha_arquivo = baixar_com_cache(malha_spec["url_gpkg"], cache, reprocessar=False)
+
+    equidade = executar_equidade_fcu(
+        demo_fonte.csv,
+        raca_fonte.csv,
+        alfa_fonte.csv,
+        malha_arquivo.caminho,
+        staging,
+        cfg.municipios,
+        caminho_ancoras=repo / "config/ancoras_regressao.yaml",
+    )
+
     regressao = _comparar_primeiros_blocos(drive, staging)
     fontes_execucao = {
-        f.nome: {
-            "url": f.arquivo_zip.url,
-            "arquivo": str(f.arquivo_zip.caminho),
-            "sha256": f.arquivo_zip.sha256,
-            "bytes": f.arquivo_zip.bytes,
-            "reutilizado": f.arquivo_zip.reutilizado,
-            "csv": str(f.csv),
-        }
-        for f in (demo_fonte, comp_fonte, renda_fonte)
+        "demografia": _fonte_manifesto(demo_fonte),
+        "composicao_domestica": _fonte_manifesto(comp_fonte),
+        "renda_responsavel": _fonte_manifesto(renda_fonte),
+        "cor_ou_raca": _fonte_manifesto(raca_fonte),
+        "alfabetizacao": _fonte_manifesto(alfa_fonte),
+        "malha_setores_pe": {
+            "url": malha_arquivo.url,
+            "arquivo": str(malha_arquivo.caminho),
+            "sha256": malha_arquivo.sha256,
+            "bytes": malha_arquivo.bytes,
+            "reutilizado": malha_arquivo.reutilizado,
+        },
     }
     relatorio = {
         "staging": str(staging),
         "fontes": fontes_execucao,
         "regressao": regressao,
+        "equidade_fcu": equidade["resultado"],
         "todos_produtos_centrais_equivalentes": all(v.get("ok", False) for v in regressao.values()),
+        "ancoras_equidade_ok": bool(equidade["resultado"]["ancoras"].get("ok", False)),
         "promocao_permitida": False,
     }
     (staging / "RELATORIO_REGRESSAO.json").write_text(
