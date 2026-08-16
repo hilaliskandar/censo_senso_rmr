@@ -1,0 +1,62 @@
+produtos:
+  demografia:
+    etapa: demografia
+    pasta_drive: 03_Tabelas_Indicadores
+    obrigatorios:
+      - RMR_CENSO2022_DEMOGRAFIA_SETOR.csv
+      - RMR_CENSO2022_DEMOGRAFIA_MUNICIPIOS.csv
+      - RMR_CENSO2022_DEMOGRAFIA_EXTREMOS_SETORIAIS.csv
+      - METADADOS_BLOCO1_DEMOGRAFIA.json
+
+  composicao_domestica:
+    etapa: composicao_domestica
+    pasta_drive: 03_Tabelas_Indicadores
+    obrigatorios:
+      - RMR_CENSO2022_COMPOSICAO_DOMESTICA_SETOR.csv
+      - RMR_CENSO2022_COMPOSICAO_DOMESTICA_MUNICIPIOS.csv
+      - RMR_CENSO2022_COMPOSICAO_DOMESTICA_MISSING.csv
+      - RMR_CENSO2022_COMPOSICAO_DOMESTICA_HETEROGENEIDADE.csv
+      - METADADOS_BLOCO2_COMPOSICAO_DOMESTICA.json
+
+  renda:
+    etapa: renda
+    pasta_drive: 03_Tabelas_Indicadores
+    obrigatorios:
+      - RMR_CENSO2022_RENDA_RESPONSAVEL_SETOR.csv
+      - RMR_CENSO2022_RENDA_RESPONSAVEL_MUNICIPIOS.csv
+      - RMR_CENSO2022_RENDA_RESPONSAVEL_MISSING.csv
+      - METADADOS_BLOCO3_RENDA.json
+
+  cruzamentos_habitacionais:
+    etapa: cruzamentos
+    pasta_drive: 03_Tabelas_Indicadores
+    obrigatorios:
+      - RMR_CENSO2022_RENDA_CRUZAMENTOS_HABITACIONAIS.csv
+
+  base_espacial:
+    etapa: integracao_espacial
+    pasta_drive: 02_Recortes_RMR
+    referencias_historicas:
+      - RMR_CENSO2022_SETORES_CONSOLIDADO.gpkg
+      - RMR_CENSO2022_SETORES_CONSOLIDADO_COM_FCU.gpkg
+      - RMR_CENSO2022_SETORES_CONSOLIDADO_SOCIODEMOGRAFIA_FCU.gpkg
+      - RMR_CENSO2022_SETORES_CONSOLIDADO_VULNERABILIDADE.gpkg
+      - RMR_CENSO2022_SETORES_CONSOLIDADO_DENSIDADE_AJUSTADA.gpkg
+      - RMR_CENSO2022_SETORES_CONSOLIDADO_ENTORNO.gpkg
+
+  analise_espacial_avancada:
+    etapa: analise_espacial
+    pasta_drive: 07_Analise_Espacial
+    status: "codigo_historico_ainda_nao_localizado"
+    referencias_historicas:
+      - "RMR Censo 2022 — Moran global e LISA — Fase 5"
+      - "RMR Censo 2022 — Estabilidade local do LISA e LISA bivariado"
+      - "RMR Censo 2022 — Segregação racial — dissimilaridade, isolamento e exposição"
+      - "RMR Censo 2022 — Auditoria de redundância e PCA exploratória"
+      - "RMR Censo 2022 — Tipologias territoriais — k-means e Ward — Fase 7"
+      - "RMR Censo 2022 — Estabilidade e sensibilidade das tipologias — Fase 8"
+
+politica:
+  - "Produto obrigatório ausente deve gerar falha de QA da etapa."
+  - "Produtos históricos são referências de regressão; não são considerados reproduzidos até comparação explícita."
+  - "Mapas e tabelas destinados à publicação devem ser regeneráveis a partir de dados intermediários versionados por manifesto."
