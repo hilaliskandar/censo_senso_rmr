@@ -1,1 +1,43 @@
-# censo_senso_rmr
+# Censo Senso RMR
+
+Pipeline reprodutível para tratamento, análise territorial e produção de tabelas e mapas a partir do Censo Demográfico 2022 e de outras camadas associadas à Região Metropolitana do Recife (RMR).
+
+## Arquitetura
+
+O projeto separa duas camadas:
+
+- **GitHub**: código, notebooks, configurações, testes, documentação e manifestos de reprodutibilidade.
+- **Google Drive**: dados brutos e derivados volumosos, GeoPackages, Parquets, planilhas analíticas, mapas, gráficos, relatórios e logs de execução.
+
+Pasta de trabalho principal no Drive: `Censo_2022_Setores_RMR`.
+
+## Objetivo
+
+Permitir a reprodução auditável do fluxo:
+
+`fontes IBGE -> validação -> recorte RMR -> indicadores -> QA -> análise espacial -> tabelas -> mapas -> manifesto de execução`
+
+A interpretação substantiva dos resultados permanece separada do processamento automatizado.
+
+## Estado
+
+A branch `agent/pipeline-rmr-v0` consolida a primeira versão da arquitetura. A auditoria inicial mostrou que as etapas de demografia, composição doméstica e rendimento já possuem scripts explícitos no Drive; etapas posteriores, como vulnerabilidade, LISA, segregação, PCA e tipologias, possuem produtos consolidados, mas ainda precisam ter seus códigos de processamento integralmente recuperados ou reconstruídos para atingir reprodutibilidade completa.
+
+## Estrutura prevista
+
+- `notebooks/`: notebook mestre para Google Colab.
+- `config/`: fontes, caminhos, indicadores, mapas e tabelas.
+- `src/censo_rmr/`: módulos reutilizáveis do pipeline.
+- `tests/`: testes de integridade e regressão.
+- `docs/`: arquitetura, proveniência e auditoria metodológica.
+- `legacy/`: scripts históricos preservados sem alteração, quando incorporados.
+
+## Princípios
+
+1. nenhuma variável do IBGE é inferida silenciosamente;
+2. toda transformação deve possuir fonte, denominador, fórmula e ressalva documentados;
+3. códigos territoriais são preservados como texto;
+4. produtos analíticos só são gerados após gates de QA;
+5. parâmetros metodológicos devem ficar em configuração, não embutidos em scripts;
+6. cada execução deve registrar versão do código, parâmetros, fontes e produtos gerados;
+7. mapas e tabelas publicados devem ser regeneráveis a partir das bases canônicas.
