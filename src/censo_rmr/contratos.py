@@ -51,14 +51,12 @@ def verificar_produto(raiz_drive: str | Path, manifesto: dict, nome_produto: str
     spec = produtos[nome_produto]
     raiz = Path(raiz_drive)
     obrigatorios_caminhos = _caminhos_obrigatorios(spec)
-    labels = obrigatorios_caminhos
-    presentes = tuple(label for label, rel in zip(labels, obrigatorios_caminhos) if (raiz / rel).exists())
-    ausentes = tuple(label for label, rel in zip(labels, obrigatorios_caminhos) if not (raiz / rel).exists())
-    obrigatorios = labels
+    presentes = tuple(rel for rel in obrigatorios_caminhos if (raiz / rel).exists())
+    ausentes = tuple(rel for rel in obrigatorios_caminhos if not (raiz / rel).exists())
     return VerificacaoProduto(
         etapa=spec.get("etapa", nome_produto),
         raiz=raiz,
-        obrigatorios=obrigatorios,
+        obrigatorios=obrigatorios_caminhos,
         presentes=presentes,
         ausentes=ausentes,
     )
