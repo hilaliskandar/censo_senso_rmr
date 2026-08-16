@@ -8,10 +8,9 @@ from censo_rmr.demografia import preparar_demografia_setorial
 MUNICIPIOS = {"2600054": "Abreu e Lima"}
 
 
-def test_regressao_primeiro_setor_historico():
-    # Linha 260005405000001 do CSV histórico do Bloco 1.
-    valores = {
-        "CD_SETOR": "260005405000001",
+def _linha_historica(chave="CD_SETOR"):
+    return {
+        chave: "260005405000001",
         "V01006": 627,
         "V01007": 298,
         "V01008": 329,
@@ -49,7 +48,10 @@ def test_regressao_primeiro_setor_historico():
         "V01040": 50,
         "V01041": 41,
     }
-    out = preparar_demografia_setorial(pd.DataFrame([valores]), MUNICIPIOS).iloc[0]
+
+
+def test_regressao_primeiro_setor_historico():
+    out = preparar_demografia_setorial(pd.DataFrame([_linha_historica()]), MUNICIPIOS).iloc[0]
 
     assert out["POP_TOTAL"] == 627
     assert out["POP_0_14"] == 124
@@ -62,6 +64,11 @@ def test_regressao_primeiro_setor_historico():
     assert math.isclose(out["RAZAO_DEPENDENCIA"], 52.18446601941748)
     assert math.isclose(out["INDICE_ENVELHECIMENTO"], 73.38709677419355)
     assert math.isclose(out["RAZAO_SEXO_H_100M"], 90.5775075987842)
+
+
+def test_aceita_chave_original_cd_setor():
+    out = preparar_demografia_setorial(pd.DataFrame([_linha_historica("CD_setor")]), MUNICIPIOS)
+    assert out.iloc[0]["CD_SETOR"] == "260005405000001"
 
 
 def test_x_e_tratado_como_ausente_e_nao_zero():
