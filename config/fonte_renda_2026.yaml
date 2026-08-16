@@ -1,0 +1,12 @@
+renda_responsavel:
+  provedor: IBGE
+  produto: Censo Demográfico 2022 - Rendimento do responsável pelo domicílio
+  data_divulgacao_fonte: "2026-05-08"
+  url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Rendimento_do_Responsavel/Agregados_por_setores_renda_responsavel_BR_20260508_csv.zip"
+  url_dicionario: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Rendimento_do_Responsavel/dicionario_de_dados_renda_responsavel_20260508.xlsx"
+  chave_canonica: CD_SETOR
+  variaveis:
+    V06001: "Pessoas responsáveis em domicílios particulares permanentes ocupados"
+    V06002: "Moradores em domicílios particulares permanentes ocupados"
+    V06004: "Valor do rendimento nominal médio mensal das pessoas responsáveis com rendimento"
+  cautela: "V06004 não é renda domiciliar per capita nem média municipal diretamente agregável."
