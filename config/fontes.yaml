@@ -1,7 +1,14 @@
 fontes:
+  dicionario_agregados_setores:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Dicionário de dados dos Agregados por Setores Censitários
+    url_xlsx: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/dicionario_de_dados_agregados_por_setores_censitarios_20260520.xlsx"
+    atualizado_em: "2026-05-20"
+    uso: "Autoridade para descrição e mapeamento das variáveis Vxxxxx dos agregados setoriais."
+
   demografia:
     provedor: IBGE
-    produto: Censo Demográfico 2022 - Agregados por Setores Censitários
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Demografia
     url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_demografia_BR.zip"
     arquivo_historico: Agregados_por_setores_demografia_BR.parquet.bin
     chave_original: CD_setor
@@ -47,27 +54,60 @@ fontes:
 
   composicao_domestica:
     provedor: IBGE
-    produto: Censo Demográfico 2022 - Agregados por Setores Censitários
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Parentesco
     url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_parentesco_BR.zip"
     arquivo_historico: Agregados_por_setores_parentesco_BR.parquet.bin
     chave_canonica: CD_SETOR
     observacao: "Unidades coletivas são preservadas na fonte, mas excluídas dos denominadores específicos definidos no módulo."
 
+  alfabetizacao:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Alfabetização
+    url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_alfabetizacao_BR.zip"
+    chave_canonica: CD_SETOR
+    universo_principal: "Pessoas de 15 anos ou mais, conforme dicionário oficial"
+    mapeamento_vxxxxx: "pendente_de_extracao_do_dicionario_20260520"
+    tratamento_suprimidos: "X e outros valores não numéricos são ausentes, nunca zero"
+
+  cor_ou_raca:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Cor ou raça
+    url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_cor_ou_raca_BR.zip"
+    chave_canonica: CD_SETOR
+    categorias_analiticas: [branca, preta, parda, amarela, indigena, preta_parda]
+    mapeamento_vxxxxx: "pendente_de_extracao_do_dicionario_20260520"
+    tratamento_suprimidos: "X e outros valores não numéricos são ausentes, nunca zero"
+
+  malha_setores_pe:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Malha de Setores Censitários com atributos - Pernambuco
+    url_gpkg: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/setores/gpkg/UF/PE/PE_setores_CD2022.gpkg"
+    crs: "EPSG:4674"
+    chave_canonica: CD_SETOR
+    fcu:
+      atributo: CD_FCU
+      regra_setor_fcu: "SETOR_FCU = 1 quando CD_FCU está preenchido; caso contrário 0, preservando ausências reais quando aplicável."
+      cautela: "FCU é classificação territorial transversal e não medida automática de intensidade de precariedade."
+
   renda_responsavel:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Rendimento do responsável pelo domicílio
-    url_csv_zip: null
-    url_status: "pendente_de_verificacao_direta_no_indice_oficial"
+    url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Rendimento_do_Responsavel/Agregados_por_setores_renda_responsavel_BR_20260508_csv.zip"
+    url_dicionario_xlsx: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Rendimento_do_Responsavel/dicionario_de_dados_renda_responsavel_20260508.xlsx"
+    atualizado_em: "2026-05-08"
     arquivo_historico: Agregados_por_setores_renda_responsavel_BR.parquet.bin
     chave_canonica: CD_SETOR
     variaveis:
       V06001: "Pessoas responsáveis em domicílios particulares permanentes ocupados"
       V06002: "Moradores em domicílios particulares permanentes ocupados"
       V06004: "Valor do rendimento nominal médio mensal das pessoas responsáveis com rendimento"
-    cautela: "V06004 não é renda domiciliar per capita nem média municipal diretamente agregável."
+      V06005: "Variância do rendimento nominal mensal das pessoas responsáveis com rendimento"
+      V06006: "Valor do rendimento nominal mediano mensal das pessoas responsáveis com rendimento"
+    cautela: "V06004/V06006 não são renda domiciliar per capita, renda familiar ou linha de pobreza."
 
 politica:
   - "A descrição da variável deve ser validada contra o dicionário oficial do IBGE antes da execução."
   - "Mudança de esquema ou ausência de variável obrigatória deve interromper a etapa dependente."
   - "Arquivos baixados devem ser registrados com URL, data de aquisição e checksum no manifesto da execução."
   - "URL não verificada não deve ser inferida por padrão de nome; a aquisição deve falhar de forma explícita até sua confirmação."
+  - "Fontes temáticas diferentes possuem universos distintos e não devem ser fundidas como se tivessem o mesmo denominador."
