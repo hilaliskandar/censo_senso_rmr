@@ -11,7 +11,7 @@ import yaml
 @dataclass(frozen=True)
 class VerificacaoProduto:
     etapa: str
-    pasta: Path
+    raiz: Path
     obrigatorios: tuple[str, ...]
     presentes: tuple[str, ...]
     ausentes: tuple[str, ...]
@@ -29,37 +29,38 @@ def carregar_produtos(caminho: str | Path) -> dict:
     return dados
 
 
-def verificar_produto(
-    raiz_drive: str | Path,
-    manifesto: dict,
-    nome_produto: str,
-) -> VerificacaoProduto:
+def _caminhos_obrigatorios(spec: dict) -> tuple[str, ...]:
+    if "arquivos_obrigatorios" in spec:
+        return tuple(spec.get("arquivos_obrigatorios", []))
+    # Compatibilidade temporária com o formato antigo do manifesto.
+    pasta = spec.get("pasta_drive")
+    nomes = spec.get("obrigatorios", [])
+    if pasta:
+        return tuple(str(Path(pasta) / nome) for nome in nomes)
+    return tuple(nomes)
+
+
+def verificar_produto(raiz_drive: str | Path, manifesto: dict, nome_produto: str) -> VerificacaoProduto:
     produtos = manifesto["produtos"]
     if nome_produto not in produtos:
         raise KeyError(f"Produto não declarado: {nome_produto}")
     spec = produtos[nome_produto]
-    obrigatorios = tuple(spec.get("obrigatorios", []))
-    pasta = Path(raiz_drive) / spec["pasta_drive"]
-    presentes = tuple(nome for nome in obrigatorios if (pasta / nome).exists())
-    ausentes = tuple(nome for nome in obrigatorios if not (pasta / nome).exists())
+    raiz = Path(raiz_drive)
+    obrigatorios = _caminhos_obrigatorios(spec)
+    presentes = tuple(rel for rel in obrigatorios if (raiz / rel).exists())
+    ausentes = tuple(rel for rel in obrigatorios if not (raiz / rel).exists())
     return VerificacaoProduto(
         etapa=spec.get("etapa", nome_produto),
-        pasta=pasta,
+        raiz=raiz,
         obrigatorios=obrigatorios,
         presentes=presentes,
         ausentes=ausentes,
     )
 
 
-def exigir_produto(
-    raiz_drive: str | Path,
-    manifesto: dict,
-    nome_produto: str,
-) -> VerificacaoProduto:
+def exigir_produto(raiz_drive: str | Path, manifesto: dict, nome_produto: str) -> VerificacaoProduto:
     verificacao = verificar_produto(raiz_drive, manifesto, nome_produto)
     if not verificacao.ok:
         faltam = ", ".join(verificacao.ausentes)
-        raise FileNotFoundError(
-            f"Contrato da etapa '{verificacao.etapa}' não atendido. Ausentes: {faltam}"
-        )
+        raise FileNotFoundError(f"Contrato da etapa '{verificacao.etapa}' não atendido. Ausentes: {faltam}")
     return verificacao
