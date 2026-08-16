@@ -24,7 +24,8 @@ def consolidar_atributos_por_setor(df: pd.DataFrame) -> pd.DataFrame:
     A malha pode conter mais de uma feicao para um mesmo setor. Para a juncao
     analitica de atributos, isso nao exige dissolver a geometria: exige apenas
     provar que os atributos usados pelo pipeline sao univocos. Qualquer conflito
-    em AREA_KM2, CD_FCU ou NM_FCU interrompe a etapa.
+    em AREA_KM2, CD_FCU ou NM_FCU interrompe a etapa, inclusive divergencia entre
+    valor preenchido e ausencia.
     """
     out = normalizar_chave_setor(df)
     campos = [c for c in ("AREA_KM2", "CD_FCU", "NM_FCU") if c in out.columns]
@@ -36,7 +37,8 @@ def consolidar_atributos_por_setor(df: pd.DataFrame) -> pd.DataFrame:
         if len(grupo) <= 1:
             continue
         for campo in campos:
-            vals = grupo[campo].astype("string").str.strip().replace({"": pd.NA}).dropna().unique()
+            serie = grupo[campo].astype("string").str.strip().replace({"": pd.NA})
+            vals = serie.fillna("<AUSENTE>").unique()
             if len(vals) > 1:
                 conflitos.append(f"{setor}/{campo}: {vals.tolist()}")
     if conflitos:
