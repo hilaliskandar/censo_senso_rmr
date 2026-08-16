@@ -20,6 +20,11 @@ class VerificacaoProduto:
     def ok(self) -> bool:
         return not self.ausentes
 
+    @property
+    def pasta(self) -> Path:
+        """Alias legado: a auditoria atual trabalha com a raiz do projeto."""
+        return self.raiz
+
 
 def carregar_produtos(caminho: str | Path) -> dict:
     with Path(caminho).open("r", encoding="utf-8") as f:
@@ -32,7 +37,6 @@ def carregar_produtos(caminho: str | Path) -> dict:
 def _caminhos_obrigatorios(spec: dict) -> tuple[str, ...]:
     if "arquivos_obrigatorios" in spec:
         return tuple(spec.get("arquivos_obrigatorios", []))
-    # Compatibilidade temporária com o formato antigo do manifesto.
     pasta = spec.get("pasta_drive")
     nomes = spec.get("obrigatorios", [])
     if pasta:
