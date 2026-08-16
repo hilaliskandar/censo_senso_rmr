@@ -9,7 +9,9 @@ src/censo_rmr/contratos.py
 src/censo_rmr/cruzamentos.py
 src/censo_rmr/csv_padrao.py
 src/censo_rmr/demografia.py
+src/censo_rmr/densidade.py
 src/censo_rmr/entorno.py
+src/censo_rmr/equidade.py
 src/censo_rmr/espacial.py
 src/censo_rmr/etapas_iniciais.py
 src/censo_rmr/fontes.py
@@ -37,6 +39,7 @@ tests/test_contratos.py
 tests/test_cruzamentos.py
 tests/test_csv_padrao.py
 tests/test_demografia.py
+tests/test_equidade_densidade.py
 tests/test_espacial.py
 tests/test_habitacao_entorno.py
 tests/test_io_ibge.py
