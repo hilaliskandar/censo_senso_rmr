@@ -50,9 +50,17 @@ def verificar_produto(raiz_drive: str | Path, manifesto: dict, nome_produto: str
         raise KeyError(f"Produto não declarado: {nome_produto}")
     spec = produtos[nome_produto]
     raiz = Path(raiz_drive)
-    obrigatorios = _caminhos_obrigatorios(spec)
-    presentes = tuple(rel for rel in obrigatorios if (raiz / rel).exists())
-    ausentes = tuple(rel for rel in obrigatorios if not (raiz / rel).exists())
+    obrigatorios_caminhos = _caminhos_obrigatorios(spec)
+    nomes = tuple(spec.get("obrigatorios", []))
+    # Use bare names for presentes/ausentes; fall back to full paths when no
+    # pasta_drive mapping exists (e.g. when arquivos_obrigatorios is used).
+    if "pasta_drive" in spec and nomes:
+        labels = nomes
+    else:
+        labels = obrigatorios_caminhos
+    presentes = tuple(label for label, rel in zip(labels, obrigatorios_caminhos) if (raiz / rel).exists())
+    ausentes = tuple(label for label, rel in zip(labels, obrigatorios_caminhos) if not (raiz / rel).exists())
+    obrigatorios = labels
     return VerificacaoProduto(
         etapa=spec.get("etapa", nome_produto),
         raiz=raiz,

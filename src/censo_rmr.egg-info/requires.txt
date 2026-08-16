@@ -1,0 +1,11 @@
+pandas>=2.2
+pyarrow>=16
+geopandas>=1.0
+pyyaml>=6.0
+numpy>=1.26
+scipy>=1.13
+scikit-learn>=1.5
+matplotlib>=3.9
+libpysal>=4.12
+esda>=2.6
+statsmodels>=0.14
