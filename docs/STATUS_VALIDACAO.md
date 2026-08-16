@@ -34,17 +34,44 @@ Esses blocos já possuem testes unitários e/ou casos-âncora extraídos de prod
 
 O fato de o cálculo estar codificado não equivale a validação integral. Para promoção metodológica, cada bloco deve ser confrontado com os produtos históricos completos ou com fonte oficial independente.
 
-## 3. Dependências upstream ainda não resolvidas
+## 3. Fontes upstream verificadas
+
+As seguintes fontes oficiais já foram verificadas e registradas em `config/fontes.yaml`:
+
+- dicionário geral dos Agregados por Setores Censitários, atualização de 20/05/2026;
+- agregados de demografia;
+- agregados de parentesco/composição doméstica;
+- agregados de alfabetização;
+- agregados de cor ou raça;
+- malha de setores de Pernambuco em GeoPackage, com atributos territoriais e `CD_FCU`;
+- agregados de rendimento do responsável, atualização de 08/05/2026;
+- dicionário específico de rendimento do responsável, atualização de 08/05/2026.
+
+A presença de uma fonte verificada no manifesto não significa que todos os seus campos já foram mapeados e regressados.
+
+## 4. Dependências upstream ainda não resolvidas
 
 ### Equidade e alfabetização
 
-O produto histórico registra claramente as fórmulas substantivas e os resultados, mas o mapeamento completo das variáveis brutas IBGE `Vxxxxx` para os numeradores e denominadores padronizados ainda precisa ser recuperado de dicionário/script-fonte.
+As fontes oficiais e os produtos históricos estão identificados. O produto histórico registra claramente as fórmulas substantivas e os resultados, mas o mapeamento completo das variáveis brutas IBGE `Vxxxxx` para todos os numeradores e denominadores padronizados ainda precisa ser extraído do dicionário oficial de 20/05/2026.
 
-Por essa razão, `equidade.py` recebe contagens padronizadas e não tenta inferir códigos brutos.
+Por essa razão, `equidade.py` recebe contagens padronizadas e **não tenta inferir códigos brutos**.
+
+A regra de trabalho é: somente depois do mapeamento documental `Vxxxxx -> conceito -> universo -> campo padronizado` a camada de aquisição poderá alimentar automaticamente esse módulo.
 
 ### FCU
 
-`SETOR_FCU` deriva da presença de `CD_FCU` na malha/classificação oficial do IBGE. A rotina de junção da camada FCU à malha canônica ainda deve ser incorporada ao pipeline de aquisição territorial.
+`SETOR_FCU` deriva da presença de `CD_FCU` na malha oficial de setores censitários do IBGE. A fonte geoespacial de Pernambuco e a regra substantiva já estão verificadas.
+
+Ainda falta incorporar ao pipeline de aquisição territorial a rotina explícita de:
+
+1. leitura da malha canônica;
+2. dissolução/controle de duplicatas por `CD_SETOR` quando necessário;
+3. preservação de `CD_FCU`/`NM_FCU`;
+4. derivação de `SETOR_FCU`;
+5. auditoria da cobertura da junção com a base temática.
+
+FCU permanece classificação territorial transversal, não sinônimo automático de precariedade.
 
 ### Densidade ajustada
 
@@ -55,14 +82,15 @@ O cálculo está definido:
 - `PCT_AREA_DOM = 100 * AREA_DOM / AREA_TOTAL`;
 - `FATOR = DENS_ADJ / DENS_CONV`.
 
-A reconstrução da camada `AREA_DOM` — área efetivamente domiciliada — ainda deve ser ligada à fonte geoespacial canônica usada no estudo histórico.
+A reconstrução da camada `AREA_DOM` — área efetivamente domiciliada — ainda deve ser ligada à fonte geoespacial canônica usada no estudo histórico. O módulo de cálculo não deve inventar `AREA_DOM` a partir da área total do setor.
 
-## 4. Parâmetros históricos recuperados
+## 5. Parâmetros históricos recuperados
 
 ### Rendimento revisado 2026
 
 - mediana `V06006` como medida principal;
 - média `V06004` como apoio/desempate;
+- variância `V06005` para heterogeneidade relativa;
 - classificação estrita abaixo de R$ 1.212 separada do quintil operacional;
 - ausência de interpretação como renda domiciliar ou linha de pobreza.
 
@@ -93,13 +121,20 @@ A reconstrução da camada `AREA_DOM` — área efetivamente domiciliada — ain
 - kNN simétrico com 6 vizinhos como sensibilidade;
 - FDR como camada consolidada, sem apagar a saída exploratória histórica sem correção.
 
-## 5. CI
+## 6. CI
 
-O CI passou para a camada inicial e para os primeiros testes de regressão. Após a incorporação de módulos espaciais/multivariados, a execução mais recente falhou.
+O GitHub Actions confirma que:
 
-O diagnóstico detalhado depende de acesso aos logs do GitHub Actions por `gh`; como esse recurso não estava disponível no ambiente da rodada anterior, nenhuma causa foi presumida e os módulos avançados permanecem experimentais.
+- checkout passa;
+- setup do Python passa;
+- instalação `pip install -e . pytest` passa;
+- a falha observada ocorre no passo `pytest -q`.
 
-## 6. Critério para promoção
+O traceback detalhado ainda precisa ser inspecionado antes de qualquer correção. Nenhuma causa será presumida apenas a partir do nome do teste ou do último módulo alterado.
+
+A branch permanece em desenvolvimento e o PR permanece em `draft` enquanto o CI não voltar a ficar verde.
+
+## 7. Critério para promoção
 
 Um módulo só deve ser considerado promovível quando cumprir simultaneamente:
 
