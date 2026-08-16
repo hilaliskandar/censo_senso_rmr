@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from censo_rmr.csv_padrao import ler_csv_rmr
 from censo_rmr.etapas_equidade import VARS_ALFA, executar_equidade_fcu
 
 
@@ -46,7 +47,7 @@ def test_executar_equidade_fcu_em_staging(tmp_path, monkeypatch):
         {"2600054": "Abreu e Lima"},
     )
 
-    out = pd.read_csv(res["setorial"], sep=";", dtype={"CD_SETOR": "string"})
+    out = ler_csv_rmr(res["setorial"])
     assert len(out) == 1
     assert out.loc[0, "PCT_FEMININO"] == 55.0
     assert out.loc[0, "PCT_PRETA_PARDA"] == 70.0
