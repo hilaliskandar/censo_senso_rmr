@@ -20,8 +20,13 @@ dependencies = [
   "libpysal>=4.12",
   "esda>=2.6",
   "statsmodels>=0.14",
-  "requests>=2.28"
+  "requests>=2.28",
+  "openpyxl>=3.1",
+  "odfpy>=1.4"
 ]
+
+[project.scripts]
+censo-rmr = "censo_rmr.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -3,96 +3,152 @@ fontes:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Dicionário de dados dos Agregados por Setores Censitários
     url_xlsx: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/dicionario_de_dados_agregados_por_setores_censitarios_20260520.xlsx"
-    atualizado_em: "2026-05-20"
-    uso: "Autoridade para descrição e mapeamento das variáveis Vxxxxx dos agregados setoriais."
+    versao_no_nome: "2026-05-20"
+    ultima_modificacao_indice_ftp: "2026-05-12 18:29"
+    uso: "Autoridade para descrição e mapeamento das variáveis Vxxxxx dos agregados setoriais temáticos."
+    observacao: "A data codificada no nome do arquivo e a data de última modificação exibida no índice FTP são diferentes; ambas são preservadas para rastreabilidade."
+
+  nota_metodologica_agregados:
+    provedor: IBGE
+    produto: "Censo Demográfico 2022 - Agregados por Setores Censitários - Nota metodológica n. 06"
+    url_pdf: "https://biblioteca.ibge.gov.br/visualizacao/livros/liv102136.pdf"
+    uso: "Confirma intervalos de códigos por tema, chave CD_SETOR e atributos básicos do setor."
+
+  basico:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Básico
+    url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_basico_BR_20260520.zip"
+    ultima_modificacao_indice_ftp: "2026-05-20 10:37"
+    chave_canonica: CD_SETOR
+    uso: "Atributos básicos e controles gerais do setor; validar todas as colunas contra o dicionário geral."
+    politica_versao: "Usar a versão 20260520 ou revisão posterior explicitamente auditada; não reutilizar silently arquivos básicos anteriores."
 
   demografia:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Demografia
     url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_demografia_BR.zip"
+    ultima_modificacao_indice_ftp: "2024-11-12 15:50"
     arquivo_historico: Agregados_por_setores_demografia_BR.parquet.bin
     chave_original: CD_setor
     chave_canonica: CD_SETOR
-    variaveis:
-      - V01006
-      - V01007
-      - V01008
-      - V01009
-      - V01010
-      - V01011
-      - V01012
-      - V01013
-      - V01014
-      - V01015
-      - V01016
-      - V01017
-      - V01018
-      - V01019
-      - V01020
-      - V01021
-      - V01022
-      - V01023
-      - V01024
-      - V01025
-      - V01026
-      - V01027
-      - V01028
-      - V01029
-      - V01030
-      - V01031
-      - V01032
-      - V01033
-      - V01034
-      - V01035
-      - V01036
-      - V01037
-      - V01038
-      - V01039
-      - V01040
-      - V01041
+    intervalo_variaveis: "V01006-V01041"
     tratamento_suprimidos: "X e outros valores não numéricos são ausentes, nunca zero"
 
   composicao_domestica:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Parentesco
     url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_parentesco_BR.zip"
+    ultima_modificacao_indice_ftp: "2024-11-12 15:50"
     arquivo_historico: Agregados_por_setores_parentesco_BR.parquet.bin
     chave_canonica: CD_SETOR
+    intervalo_variaveis: "V01042-V01223"
     observacao: "Unidades coletivas são preservadas na fonte, mas excluídas dos denominadores específicos definidos no módulo."
 
   alfabetizacao:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Alfabetização
     url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_alfabetizacao_BR.zip"
+    ultima_modificacao_indice_ftp: "2024-11-12 15:50"
     chave_canonica: CD_SETOR
-    universo_principal: "Pessoas de 15 anos ou mais, conforme dicionário oficial"
-    mapeamento_vxxxxx: "pendente_de_extracao_do_dicionario_20260520"
+    intervalo_variaveis: "V00644-V01005"
+    mapeamento_vxxxxx: "config/mapeamento_ibge.yaml"
     tratamento_suprimidos: "X e outros valores não numéricos são ausentes, nunca zero"
 
   cor_ou_raca:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Cor ou raça
     url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_cor_ou_raca_BR.zip"
+    ultima_modificacao_indice_ftp: "2024-11-12 15:50"
     chave_canonica: CD_SETOR
+    intervalo_variaveis: "V01317-V01411"
     categorias_analiticas: [branca, preta, parda, amarela, indigena, preta_parda]
-    mapeamento_vxxxxx: "pendente_de_extracao_do_dicionario_20260520"
+    mapeamento_vxxxxx: "config/mapeamento_ibge.yaml"
     tratamento_suprimidos: "X e outros valores não numéricos são ausentes, nunca zero"
+
+  caracteristicas_domicilio_1:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Características do domicílio 1
+    url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_caracteristicas_domicilio1_BR.zip"
+    ultima_modificacao_indice_ftp: "2024-11-12 15:50"
+    chave_canonica: CD_SETOR
+    intervalo_variaveis: "V00001-V00089"
+
+  caracteristicas_domicilio_2:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Características do domicílio 2
+    url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_caracteristicas_domicilio2_BR_20250417.zip"
+    ultima_modificacao_indice_ftp: "2025-04-17 09:52"
+    chave_canonica: CD_SETOR
+    intervalo_variaveis: "V00090-V00495"
+    observacao: "Usar a versão corrigida de 17/04/2025; o IBGE registra correção de variáveis anteriormente zeradas, incluindo V00236 e outras do bloco."
+    politica_versao: "Versões anteriores à correção de 17/04/2025 são incompatíveis com o pipeline e devem gerar falha de contrato."
+
+  caracteristicas_domicilio_3:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Agregados por Setores Censitários - Características do domicílio 3
+    url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_caracteristicas_domicilio3_BR_20250417.zip"
+    ultima_modificacao_indice_ftp: "2025-04-17 09:52"
+    chave_canonica: CD_SETOR
+    intervalo_variaveis: "V00496-V00643"
+    observacao: "Usar a versão corrigida de 17/04/2025; o IBGE registra correção de variáveis anteriormente zeradas."
+    politica_versao: "Versões anteriores à correção de 17/04/2025 são incompatíveis com o pipeline e devem gerar falha de contrato."
+
+  dicionario_malha_atributos:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Dicionário da malha com atributos
+    url_xlsx: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/Dicionario_de_dados_malha_agregados.xlsx"
+    url_ods: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/Dicionario_de_dados_malha_agregados.ods"
+    ultima_modificacao_indice_ftp_xlsx: "2024-11-13 18:36"
+    ultima_modificacao_indice_ftp_ods: "2024-11-13 18:41"
 
   malha_setores_pe:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Malha de Setores Censitários com atributos - Pernambuco
     url_gpkg: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/setores/gpkg/UF/PE/PE_setores_CD2022.gpkg"
+    url_csv_br: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/setores/csv/BR_setores_CD2022.csv"
+    ultima_modificacao_indice_ftp_gpkg: "2024-11-13 15:23"
     crs: "EPSG:4674"
     chave_canonica: CD_SETOR
+    atributos_confirmados: [AREA_KM2, CD_FCU, NM_FCU]
     fcu:
       atributo: CD_FCU
-      regra_setor_fcu: "SETOR_FCU = 1 quando CD_FCU está preenchido; caso contrário 0, preservando ausências reais quando aplicável."
+      regra_setor_fcu: "SETOR_FCU = 1 quando CD_FCU está preenchido; caso contrário 0."
       cautela: "FCU é classificação territorial transversal e não medida automática de intensidade de precariedade."
+
+  area_domiciliada_densidade_ajustada:
+    provedor: IBGE
+    produto: "Área territorial efetivamente domiciliada e densidade demográfica ajustada dos Setores Censitários"
+    pagina_produto: "https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/26565-malhas-de-setores-censitarios-divisoes-intramunicipais.html"
+    formatos_publicados: [xlsx, ods]
+    url_download_direto: "pendente_de_extracao_do_link_dinamico_do_portal"
+    leia_me: "Leia-me – Observações sobre o cálculo da área territorial efetivamente domiciliada"
+    chave_canonica: CD_SETOR
+    uso: "Fonte oficial para AREA_DOM e densidade demográfica ajustada; não reconstruir a área por procedimento próprio quando esta fonte estiver disponível."
+    status: confirmado_no_portal_oficial
+
+  entorno:
+    provedor: IBGE
+    produto: Censo Demográfico 2022 - Características urbanísticas do entorno dos domicílios - Agregados por Setores Censitários
+    diretorio_raiz: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Caracteristicas_urbanisticas_do_entorno_dos_domicilios/"
+    url_dicionarios_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Caracteristicas_urbanisticas_do_entorno_dos_domicilios/dicionarios_de_dados_entorno.zip"
+    url_setores_domicilios_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Caracteristicas_urbanisticas_do_entorno_dos_domicilios/Agregados_por_Setor_csv/Agregados_por_setores_entorno_domicílios_BR.zip"
+    url_setores_faces_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Caracteristicas_urbanisticas_do_entorno_dos_domicilios/Agregados_por_Setor_csv/Agregados_por_setores_entorno_faces_BR.zip"
+    url_setores_moradores_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Caracteristicas_urbanisticas_do_entorno_dos_domicilios/Agregados_por_Setor_csv/Agregados_por_setores_entorno_moradores_BR.zip"
+    intervalos:
+      domicilios: "V05000-V05034"
+      moradores: "V05200-V05234"
+      faces: "V05400-V05434"
+    ultima_modificacao_indice_ftp_dados: "2025-04-17 10:02"
+    ultima_modificacao_indice_ftp_dicionarios: "2025-05-07 17:06"
+    chave_canonica: CD_SETOR
+    cautela: "Domicílios, faces e moradores são universos distintos; percentuais devem usar o arquivo e denominador compatíveis com cada indicador."
 
   renda_responsavel:
     provedor: IBGE
     produto: Censo Demográfico 2022 - Rendimento do responsável pelo domicílio
+    diretorio_raiz: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Rendimento_do_Responsavel/"
     url_csv_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Rendimento_do_Responsavel/Agregados_por_setores_renda_responsavel_BR_20260508_csv.zip"
+    url_xlsx_zip: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Rendimento_do_Responsavel/Agregados_por_setores_renda_responsavel_BR_20260508_xlsx.zip"
     url_dicionario_xlsx: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios_Rendimento_do_Responsavel/dicionario_de_dados_renda_responsavel_20260508.xlsx"
     atualizado_em: "2026-05-08"
     arquivo_historico: Agregados_por_setores_renda_responsavel_BR.parquet.bin
@@ -108,6 +164,9 @@ fontes:
 politica:
   - "A descrição da variável deve ser validada contra o dicionário oficial do IBGE antes da execução."
   - "Mudança de esquema ou ausência de variável obrigatória deve interromper a etapa dependente."
-  - "Arquivos baixados devem ser registrados com URL, data de aquisição e checksum no manifesto da execução."
+  - "Arquivos baixados devem ser registrados com URL, data de aquisição, tamanho e checksum no manifesto da execução."
   - "URL não verificada não deve ser inferida por padrão de nome; a aquisição deve falhar de forma explícita até sua confirmação."
   - "Fontes temáticas diferentes possuem universos distintos e não devem ser fundidas como se tivessem o mesmo denominador."
+  - "Quando o FTP mantiver versões antigas e versões datadas no mesmo diretório, a versão escolhida deve ser explicitada no manifesto e não substituída silenciosamente."
+  - "Arquivos de características do domicílio 2 e 3 anteriores à correção de 17/04/2025 são rejeitados pelo contrato."
+  - "AREA_DOM deve ser obtida da publicação oficial de área territorial efetivamente domiciliada; não deve mais ser tratada como variável a reconstruir por hipótese local."

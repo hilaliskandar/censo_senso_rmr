@@ -1,0 +1,2 @@
+[console_scripts]
+censo-rmr = censo_rmr.cli:main

@@ -1,0 +1,157 @@
+# Mapeamento operacional entre variaveis publicadas pelo IBGE e campos canonicos do pipeline.
+# Autoridade final: dicionarios oficiais listados em config/fontes.yaml.
+# Neste ambiente, o XLSX oficial nao pode ser materializado; por isso codigos finos
+# conferidos por produtos historicos + transcricao publica permanecem com validacao
+# documental binaria pendente. O pipeline pode testa-los, mas nao promove-los sozinho.
+
+status_padrao_codigo_fino: "operacional_conferido; validar_no_xlsx_oficial_antes_da_promocao"
+
+sexo_cor_alfabetizacao:
+  populacao:
+    POP_TOTAL:
+      fonte: demografia
+      expressao: [V01006]
+      descricao: "Quantidade de moradores"
+      status: confirmado_no_fluxo_historico_e_intervalo_oficial
+    POP_FEMININO:
+      fonte: demografia
+      expressao: [V01008]
+      descricao: "Sexo feminino"
+      status: confirmado_no_fluxo_historico_e_intervalo_oficial
+
+  cor_ou_raca:
+    POP_BRANCA:
+      fonte: cor_ou_raca
+      expressao: [V01317]
+      descricao: "Cor ou raca e branca"
+      status: operacional_conferido_validacao_xlsx_pendente
+    POP_PRETA:
+      fonte: cor_ou_raca
+      expressao: [V01318]
+      descricao: "Cor ou raca e preta"
+      status: operacional_conferido_validacao_xlsx_pendente
+    POP_AMARELA:
+      fonte: cor_ou_raca
+      expressao: [V01319]
+      descricao: "Cor ou raca e amarela"
+      status: operacional_conferido_validacao_xlsx_pendente
+    POP_PARDA:
+      fonte: cor_ou_raca
+      expressao: [V01320]
+      descricao: "Cor ou raca e parda"
+      status: operacional_conferido_validacao_xlsx_pendente
+    POP_INDIGENA:
+      fonte: cor_ou_raca
+      expressao: [V01321]
+      descricao: "Cor ou raca e indigena"
+      status: operacional_conferido_validacao_xlsx_pendente
+
+  alfabetizacao:
+    POP_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00852, V00853, V00854, V00855, V00856, V00857]
+      descricao: "Pessoas de 15 anos ou mais, sabendo ou nao sabendo ler e escrever"
+      status: operacional_conferido_validacao_xlsx_pendente
+    NAO_ALF_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00853, V00855, V00857]
+      descricao: "Pessoas de 15 anos ou mais que nao sabem ler e escrever"
+      status: operacional_conferido_validacao_xlsx_pendente
+    POP_MASC_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00858, V00859, V00860, V00861, V00862, V00863]
+      status: operacional_conferido_validacao_xlsx_pendente
+    NAO_ALF_MASC_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00859, V00861, V00863]
+      status: operacional_conferido_validacao_xlsx_pendente
+    POP_FEM_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00864, V00865, V00866, V00867, V00868, V00869]
+      status: operacional_conferido_validacao_xlsx_pendente
+    NAO_ALF_FEM_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00865, V00867, V00869]
+      status: operacional_conferido_validacao_xlsx_pendente
+    POP_BRANCA_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00870, V00871, V00880, V00881, V00890, V00891]
+      status: operacional_conferido_validacao_xlsx_pendente
+    NAO_ALF_BRANCA_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00871, V00881, V00891]
+      status: operacional_conferido_validacao_xlsx_pendente
+    POP_PRETA_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00872, V00873, V00882, V00883, V00892, V00893]
+      status: operacional_conferido_validacao_xlsx_pendente
+    NAO_ALF_PRETA_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00873, V00883, V00893]
+      status: operacional_conferido_validacao_xlsx_pendente
+    POP_PARDA_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00876, V00877, V00886, V00887, V00896, V00897]
+      status: operacional_conferido_validacao_xlsx_pendente
+    NAO_ALF_PARDA_15_MAIS:
+      fonte: alfabetizacao
+      expressao: [V00877, V00887, V00897]
+      status: operacional_conferido_validacao_xlsx_pendente
+
+fcu:
+  CD_FCU:
+    fonte: malha_setores_pe
+    descricao: "Codigo da Favela e Comunidade Urbana"
+    status: confirmado_portal_oficial
+  NM_FCU:
+    fonte: malha_setores_pe
+    descricao: "Nome da Favela e Comunidade Urbana"
+    status: confirmado_portal_oficial
+  SETOR_FCU:
+    derivacao: "1 se CD_FCU preenchido; 0 se vazio"
+    status: derivacao_projeto_documentada
+
+habitacao:
+  status: "mapeamento_historico_a_validar_no_xlsx_oficial_na_execucao_colab"
+  V00001: "Domicilios Particulares Permanentes Ocupados"
+  V00002: "Domicilios Particulares Improvisados Ocupados"
+  V00050: "DPPO em casa de comodos ou cortico"
+  V00052: "DPPO em estrutura residencial permanente degradada ou inacabada"
+  V00005: "Quantidade de moradores em DPPO"
+  V00022: "DPPO com 6 moradores"
+  V00023: "DPPO com 7 moradores"
+  V00024: "DPPO com 8 moradores"
+  V00025: "DPPO com 9 moradores"
+  V00026: "DPPO com 10 ou mais moradores"
+  V00200: "Agua encanada apenas ao terreno"
+  V00201: "Agua nao chega encanada ao domicilio"
+  V00236: "Apenas banheiro de uso comum a mais de um domicilio"
+  V00237: "Apenas sanitario ou buraco para dejecoes"
+  V00238: "Sem banheiro nem sanitario"
+  V00312: "Esgoto em fossa rudimentar ou buraco"
+  V00313: "Esgoto destinado a vala"
+  V00314: "Esgoto destinado a rio, lago, corrego ou mar"
+  V00315: "Outra forma de destinacao do esgoto"
+  V00316: "Sem destinacao porque nao havia banheiro nem sanitario"
+  V00399: "Lixo queimado na propriedade"
+  V00400: "Lixo enterrado na propriedade"
+  V00401: "Lixo jogado em terreno baldio, encosta ou area publica"
+  V00402: "Outro destino do lixo"
+  V00464: "Domicilio sem ligacao a rede geral de agua"
+
+entorno:
+  universo_preferencial: moradores
+  denominador_historico: V05200
+  status_denominador: "validacao_no_dicionario_oficial_de_entorno_pendente"
+  referencias_de_conferencia_nao_executaveis:
+    V05001: "Domicilios em face com circulacao da via para caminhao/onibus"
+    V05006: "Domicilios em face com via pavimentada"
+    V05009: "Domicilios em face com bueiro"
+    V05012: "Domicilios em face com iluminacao publica"
+    V05021: "Domicilios em face com calcada"
+    V05024: "Domicilios em face com obstaculo na calcada"
+    V05027: "Domicilios em face com rampa para cadeirante"
+    V05031: "Domicilios em face com 1 a 2 arvores"
+    V05032: "Domicilios em face com 3 a 4 arvores"
+    V05033: "Domicilios em face com 5 ou mais arvores"
+  regra: "Nao promover referencias_de_conferencia_nao_executaveis a contrato antes da leitura do pacote oficial dicionarios_de_dados_entorno.zip."

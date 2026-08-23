@@ -128,6 +128,108 @@ def comparar_dataframes(
     )
 
 
+def diagnosticar_regressao(
+    novo: pd.DataFrame,
+    referencia: pd.DataFrame,
+    *,
+    chave: str = "CD_SETOR",
+    colunas: Iterable[str] | None = None,
+    atol: float = 1e-8,
+    rtol: float = 1e-7,
+    max_amostras: int = 20,
+) -> dict:
+    """Produz diagnóstico compacto para uma regressão integral.
+
+    A função complementa :func:`comparar_dataframes`: além dos totais, retorna
+    amostras das chaves que aparecem apenas em uma das bases e das divergências
+    por coluna. O objetivo é permitir que uma execução em staging seja
+    investigável sem inspeção manual de milhares de linhas.
+    """
+    if max_amostras < 1:
+        raise ValueError("max_amostras deve ser >= 1")
+
+    resumo = comparar_dataframes(
+        novo,
+        referencia,
+        chave=chave,
+        colunas=colunas,
+        atol=atol,
+        rtol=rtol,
+    )
+
+    n = novo.copy()
+    r = referencia.copy()
+    n[chave] = n[chave].astype("string")
+    r[chave] = r[chave].astype("string")
+    kn = set(n[chave].dropna())
+    kr = set(r[chave].dropna())
+
+    comparaveis = list(resumo.colunas_comparadas)
+    comum = n[[chave, *comparaveis]].merge(
+        r[[chave, *comparaveis]],
+        on=chave,
+        how="inner",
+        suffixes=("__novo", "__ref"),
+        validate="one_to_one",
+    )
+
+    por_coluna: dict[str, dict] = {}
+    for c in comparaveis:
+        a = comum[f"{c}__novo"]
+        b = comum[f"{c}__ref"]
+        amostras: list[dict] = []
+
+        if pd.api.types.is_numeric_dtype(a) and pd.api.types.is_numeric_dtype(b):
+            av = a.to_numpy(dtype=float, na_value=np.nan)
+            bv = b.to_numpy(dtype=float, na_value=np.nan)
+            iguais = np.isclose(av, bv, rtol=rtol, atol=atol, equal_nan=True)
+            pos = np.flatnonzero(~iguais)
+            for i in pos[:max_amostras]:
+                novo_v = av[i]
+                ref_v = bv[i]
+                amostras.append(
+                    {
+                        chave: str(comum.iloc[i][chave]),
+                        "novo": None if np.isnan(novo_v) else float(novo_v),
+                        "referencia": None if np.isnan(ref_v) else float(ref_v),
+                        "erro_absoluto": None
+                        if np.isnan(novo_v) or np.isnan(ref_v)
+                        else float(abs(novo_v - ref_v)),
+                    }
+                )
+            total_div = int(len(pos))
+            tipo = "numerica"
+        else:
+            sa = a.astype("string").fillna("<NA>")
+            sb = b.astype("string").fillna("<NA>")
+            mask = (sa != sb).to_numpy()
+            pos = np.flatnonzero(mask)
+            for i in pos[:max_amostras]:
+                amostras.append(
+                    {
+                        chave: str(comum.iloc[i][chave]),
+                        "novo": None if pd.isna(a.iloc[i]) else str(a.iloc[i]),
+                        "referencia": None if pd.isna(b.iloc[i]) else str(b.iloc[i]),
+                    }
+                )
+            total_div = int(len(pos))
+            tipo = "textual"
+
+        if total_div:
+            por_coluna[c] = {
+                "tipo": tipo,
+                "divergencias": total_div,
+                "amostras": amostras,
+            }
+
+    return {
+        "resumo": resumo.como_dict(),
+        "amostra_chaves_apenas_novo": sorted(map(str, kn - kr))[:max_amostras],
+        "amostra_chaves_apenas_referencia": sorted(map(str, kr - kn))[:max_amostras],
+        "divergencias_por_coluna": por_coluna,
+    }
+
+
 def _ler_csv_auto(caminho: str | Path, chave: str) -> pd.DataFrame:
     caminho = Path(caminho)
     sep = detectar_separador(caminho)
