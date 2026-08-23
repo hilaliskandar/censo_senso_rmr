@@ -14,7 +14,7 @@ from .etapas_densidade import executar_densidade_oficial
 from .etapas_equidade import executar_equidade_fcu
 from .etapas_iniciais import executar_composicao_domestica, executar_cruzamentos, executar_demografia, executar_renda
 from .fontes import carregar_manifesto_fontes, preparar_fonte_csv
-from .regressao import comparar_csvs, diagnosticar_dataframes
+from .regressao import comparar_csvs, diagnosticar_regressao
 
 
 class ModoPipeline(str, Enum):
@@ -135,16 +135,30 @@ def _regressao_integral(
     rtol = float(spec_produto.get("tolerancia_rel", 1e-7))
     novo_df = ler_csv_rmr(novo)
     ref_df = ler_csv_rmr(ref)
-    diag = diagnosticar_dataframes(
+    diag = diagnosticar_regressao(
         novo_df,
         ref_df,
         chave=chave,
         colunas=colunas,
         atol=atol,
         rtol=rtol,
-        limite_amostras=limite_amostras,
+        max_amostras=limite_amostras,
     )
-    return {"status": "comparado", **diag}
+    divergencias_por_coluna = {
+        col: info["divergencias"] for col, info in diag["divergencias_por_coluna"].items()
+    }
+    amostras_divergencias = [
+        {"coluna": col, **amostra}
+        for col, info in diag["divergencias_por_coluna"].items()
+        for amostra in info["amostras"]
+    ]
+    return {
+        "status": "comparado",
+        "ok": diag["resumo"]["ok"],
+        "resultado": diag["resumo"],
+        "divergencias_por_coluna": divergencias_por_coluna,
+        "amostras_divergencias": amostras_divergencias,
+    }
 
 
 def reprocessar_primeiros_blocos(ctx: dict) -> dict:
